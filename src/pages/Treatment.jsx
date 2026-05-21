@@ -6,12 +6,16 @@ export default function Treatment() {
   const [saveStatus, setSaveStatus] = useState("Chưa lưu");
 
   function saveTreatment() {
-    localStorage.setItem("myovision_treatment_BN001", JSON.stringify({
-      patientId: "BN001",
-      savedAt: new Date().toISOString(),
-      protocol: "Ortho-K + Atropine 0.01%",
-      goal: "Giảm tốc độ tăng AL xuống dưới 0.20 mm/năm",
-    }));
+    localStorage.setItem(
+      "myovision_treatment_BN001",
+      JSON.stringify({
+        patientId: "BN001",
+        savedAt: new Date().toISOString(),
+        protocol: "Ortho-K + Atropine 0.01%",
+        goal: "Giảm tốc độ tăng AL xuống dưới 0.20 mm/năm",
+      })
+    );
+
     setSaveStatus("Đã lưu phác đồ");
   }
 
@@ -22,17 +26,20 @@ export default function Treatment() {
 
   return (
     <MainLayout>
-      <section className="mb-5 rounded-2xl border border-blue-100 bg-white p-5 shadow-[0_12px_32px_rgba(15,23,42,0.08)]">
+      <section className="mb-5 rounded-2xl border border-blue-100 bg-white p-4 shadow-[0_12px_32px_rgba(15,23,42,0.08)] sm:p-5">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <p className="text-xs font-black uppercase tracking-[0.2em] text-[#2563EB]">
               Phác đồ điều trị
             </p>
-            <h2 className="mt-1 text-2xl font-black tracking-tight text-slate-950">
+
+            <h2 className="mt-1 text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
               Quản lý phác đồ kiểm soát cận thị
             </h2>
+
             <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-500">
-              Ghi nhận phương pháp điều trị, theo dõi tuân thủ, tác dụng phụ và kế hoạch tái khám.
+              Ghi nhận phương pháp điều trị, theo dõi tuân thủ, tác dụng phụ và
+              kế hoạch tái khám.
             </p>
           </div>
 
@@ -45,10 +52,10 @@ export default function Treatment() {
         </div>
       </section>
 
-      <section className="grid gap-5 xl:grid-cols-[1fr_420px]">
+      <section className="grid grid-cols-1 gap-5 2xl:grid-cols-[1fr_460px]">
         <div className="grid gap-5">
-          <section className="card p-5">
-            <div className="mb-4 flex items-center justify-between gap-3">
+          <section className="card p-4 sm:p-5">
+            <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <h3 className="text-base font-black text-slate-950">
                   1. Trạng thái phác đồ hiện tại
@@ -57,12 +64,13 @@ export default function Treatment() {
                   Chọn một hoặc nhiều phương pháp điều trị.
                 </p>
               </div>
-              <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-black text-[#2563EB]">
+
+              <span className="w-fit rounded-full bg-blue-50 px-3 py-1 text-xs font-black text-[#2563EB]">
                 ĐANG ÁP DỤNG
               </span>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <label className="field-label">
                 Ngày bắt đầu
                 <input className="field" type="date" defaultValue="2026-05-19" />
@@ -74,23 +82,26 @@ export default function Treatment() {
               </label>
             </div>
 
-            <div className="mt-4 grid gap-3 sm:grid-cols-2">
-              {["Ortho-K", "Atropine", "Kính kiểm soát cận thị", "Áp tròng mềm đa tròng"].map(
-                (item, index) => (
-                  <label
-                    key={item}
-                    className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm font-bold text-slate-700"
-                  >
-                    <input type="checkbox" defaultChecked={index < 2} />
-                    {item}
-                  </label>
-                )
-              )}
+            <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+              {[
+                "Ortho-K",
+                "Atropine",
+                "Kính kiểm soát cận thị",
+                "Áp tròng mềm đa tròng",
+              ].map((item, index) => (
+                <label
+                  key={item}
+                  className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm font-bold text-slate-700"
+                >
+                  <input type="checkbox" defaultChecked={index < 2} />
+                  {item}
+                </label>
+              ))}
             </div>
           </section>
 
-          <section className="card p-5">
-            <div className="mb-4 flex items-center justify-between gap-3">
+          <section className="card p-4 sm:p-5">
+            <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <h3 className="text-base font-black text-slate-950">
                   2. Module Ortho-K
@@ -99,32 +110,38 @@ export default function Treatment() {
                   Thông số kính Ortho-K đang sử dụng.
                 </p>
               </div>
-              <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-black text-[#2563EB]">
+
+              <span className="w-fit rounded-full bg-blue-50 px-3 py-1 text-xs font-black text-[#2563EB]">
                 ORTHO-K
               </span>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
               <label className="field-label">
                 Hãng kính
                 <input className="field" defaultValue="Menicon" />
               </label>
+
               <label className="field-label">
                 BC
                 <input className="field" defaultValue="8.20" />
               </label>
+
               <label className="field-label">
                 DIA
                 <input className="field" defaultValue="10.60" />
               </label>
+
               <label className="field-label">
                 OZD
                 <input className="field" defaultValue="6.0" />
               </label>
+
               <label className="field-label">
                 Thiết kế
                 <input className="field" defaultValue="Toric" />
               </label>
+
               <label className="field-label">
                 Ngày giao kính
                 <input className="field" type="date" defaultValue="2026-05-20" />
@@ -132,8 +149,8 @@ export default function Treatment() {
             </div>
           </section>
 
-          <section className="card p-5">
-            <div className="mb-4 flex items-center justify-between gap-3">
+          <section className="card p-4 sm:p-5">
+            <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <h3 className="text-base font-black text-slate-950">
                   3. Module Atropine
@@ -142,12 +159,13 @@ export default function Treatment() {
                   Theo dõi nồng độ, tần suất và dung nạp thuốc.
                 </p>
               </div>
-              <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-black text-[#2563EB]">
+
+              <span className="w-fit rounded-full bg-blue-50 px-3 py-1 text-xs font-black text-[#2563EB]">
                 ATROPINE
               </span>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
               <label className="field-label">
                 Nồng độ
                 <select className="field" defaultValue="0.01%">
@@ -169,13 +187,16 @@ export default function Treatment() {
 
               <label className="field-label xl:col-span-3">
                 Tác dụng phụ
-                <textarea className="field min-h-[84px] py-2" defaultValue="Chưa ghi nhận sợ sáng, mờ nhìn gần hoặc kích ứng." />
+                <textarea
+                  className="field min-h-[84px] py-2"
+                  defaultValue="Chưa ghi nhận sợ sáng, mờ nhìn gần hoặc kích ứng."
+                />
               </label>
             </div>
           </section>
 
-          <section className="card p-5">
-            <div className="mb-4 flex items-center justify-between gap-3">
+          <section className="card p-4 sm:p-5">
+            <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <h3 className="text-base font-black text-slate-950">
                   4. Tuân thủ & kế hoạch theo dõi
@@ -184,15 +205,19 @@ export default function Treatment() {
                   Đánh giá mức độ dùng kính/thuốc.
                 </p>
               </div>
-              <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-black text-[#2563EB]">
+
+              <span className="w-fit rounded-full bg-blue-50 px-3 py-1 text-xs font-black text-[#2563EB]">
                 SAFETY
               </span>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <label className="field-label">
                 Mức độ tuân thủ
-                <input className="field" defaultValue="6 đêm/tuần, nhỏ thuốc đều" />
+                <input
+                  className="field"
+                  defaultValue="6 đêm/tuần, nhỏ thuốc đều"
+                />
               </label>
 
               <label className="field-label">
@@ -206,16 +231,27 @@ export default function Treatment() {
 
               <label className="field-label md:col-span-2">
                 Ghi chú chỉ định
-                <textarea className="field min-h-[96px] py-2" defaultValue="Bệnh nhi nguy cơ cao, tăng AL nhanh. Ưu tiên phối hợp Ortho-K và Atropine nồng độ thấp." />
+                <textarea
+                  className="field min-h-[96px] py-2"
+                  defaultValue="Bệnh nhi nguy cơ cao, tăng AL nhanh. Ưu tiên phối hợp Ortho-K và Atropine nồng độ thấp."
+                />
               </label>
             </div>
 
-            <div className="mt-5 flex gap-3">
-              <button type="button" onClick={saveTreatment} className="rounded-xl bg-[#2563EB] px-5 py-2.5 text-sm font-black text-white shadow-lg shadow-blue-600/20">
+            <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+              <button
+                type="button"
+                onClick={saveTreatment}
+                className="rounded-xl bg-[#2563EB] px-5 py-2.5 text-sm font-black text-white shadow-lg shadow-blue-600/20"
+              >
                 Lưu phác đồ
               </button>
 
-              <button type="button" onClick={resetTreatment} className="rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-black text-slate-600">
+              <button
+                type="button"
+                onClick={resetTreatment}
+                className="rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-black text-slate-600"
+              >
                 Đặt lại
               </button>
             </div>
@@ -223,78 +259,84 @@ export default function Treatment() {
         </div>
 
         <aside className="grid content-start gap-5">
-          <section className="card p-5">
-  <div className="mb-4">
-    <p className="text-xs font-black uppercase tracking-[0.2em] text-[#2563EB]">
-      Giải thích cho phụ huynh
-    </p>
-    <h3 className="mt-1 text-xl font-black text-slate-950">
-      So sánh các phương pháp kiểm soát cận thị
-    </h3>
-    <p className="mt-2 text-sm leading-6 text-slate-500">
-      Bảng này giúp bác sĩ giải thích dễ hiểu cho phụ huynh về ưu điểm,
-      hạn chế và mức độ phù hợp của từng phương pháp.
-    </p>
-  </div>
+          <section className="card p-4 sm:p-5">
+            <div className="mb-4">
+              <p className="text-xs font-black uppercase tracking-[0.2em] text-[#2563EB]">
+                Giải thích cho phụ huynh
+              </p>
 
-  <div className="grid gap-4 xl:grid-cols-2">
-    {treatmentOptions.map((item) => (
-      <article
-        key={item.name}
-        className="rounded-2xl border border-slate-200 bg-slate-50 p-4"
-      >
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            <h4 className="text-base font-black text-slate-950">
-              {item.name}
-            </h4>
-            <p className="mt-1 text-xs font-bold text-[#2563EB]">
-              {item.type}
-            </p>
-          </div>
+              <h3 className="mt-1 text-xl font-black text-slate-950">
+                So sánh các phương pháp kiểm soát cận thị
+              </h3>
 
-          <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-black text-blue-700">
-            {item.effect}
-          </span>
-        </div>
+              <p className="mt-2 text-sm leading-6 text-slate-500">
+                Bảng này giúp bác sĩ giải thích dễ hiểu cho phụ huynh về ưu
+                điểm, hạn chế và mức độ phù hợp của từng phương pháp.
+              </p>
+            </div>
 
-        <p className="mt-3 text-sm font-semibold leading-6 text-slate-700">
-          {item.parentText}
-        </p>
+            <div className="grid grid-cols-1 gap-4">
+              {treatmentOptions.map((item) => (
+                <article
+                  key={item.name}
+                  className="rounded-2xl border border-slate-200 bg-slate-50 p-4"
+                >
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                    <div>
+                      <h4 className="text-base font-black text-slate-950">
+                        {item.name}
+                      </h4>
 
-        <div className="mt-4 grid gap-3 md:grid-cols-2">
-          <div className="rounded-xl bg-white p-3">
-            <p className="text-xs font-black uppercase text-emerald-600">
-              Ưu điểm
-            </p>
-            <ul className="mt-2 space-y-1 text-sm text-slate-600">
-              {item.pros.map((pro) => (
-                <li key={pro}>• {pro}</li>
+                      <p className="mt-1 text-xs font-bold text-[#2563EB]">
+                        {item.type}
+                      </p>
+                    </div>
+
+                    <span className="w-fit shrink-0 rounded-full bg-blue-100 px-3 py-1 text-[11px] font-black text-blue-700">
+                      {item.effect}
+                    </span>
+                  </div>
+
+                  <p className="mt-3 text-sm font-semibold leading-6 text-slate-700">
+                    {item.parentText}
+                  </p>
+
+                  <div className="mt-4 grid grid-cols-1 gap-3">
+                    <div className="rounded-xl bg-white p-3">
+                      <p className="text-xs font-black uppercase text-emerald-600">
+                        Ưu điểm
+                      </p>
+
+                      <ul className="mt-2 space-y-1 text-sm text-slate-600">
+                        {item.pros.map((pro) => (
+                          <li key={pro}>• {pro}</li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <div className="rounded-xl bg-white p-3">
+                      <p className="text-xs font-black uppercase text-red-600">
+                        Cần lưu ý
+                      </p>
+
+                      <ul className="mt-2 space-y-1 text-sm text-slate-600">
+                        {item.cons.map((con) => (
+                          <li key={con}>• {con}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div className="mt-3 rounded-xl bg-white p-3 text-sm">
+                    <b>Phù hợp khi: </b>
+                    <span className="text-slate-600">{item.suitableFor}</span>
+                  </div>
+                </article>
               ))}
-            </ul>
-          </div>
+            </div>
+          </section>
 
-          <div className="rounded-xl bg-white p-3">
-            <p className="text-xs font-black uppercase text-red-600">
-              Cần lưu ý
-            </p>
-            <ul className="mt-2 space-y-1 text-sm text-slate-600">
-              {item.cons.map((con) => (
-                <li key={con}>• {con}</li>
-              ))}
-            </ul>
-          </div>
-        </div>
-
-        <div className="mt-3 rounded-xl bg-white p-3 text-sm">
-          <b>Phù hợp khi: </b>
-          <span className="text-slate-600">{item.suitableFor}</span>
-        </div>
-      </article>
-    ))}
-  </div>
-</section>
-          <section className="rounded-[22px] border border-slate-200 bg-white p-5 shadow-[0_12px_32px_rgba(15,23,42,0.08)]">
+          <section className="rounded-[22px] border border-slate-200 bg-white p-4 shadow-[0_12px_32px_rgba(15,23,42,0.08)] sm:p-5">
             <p className="text-xs font-black uppercase tracking-[0.2em] text-[#2563EB]">
               Tóm tắt điều trị
             </p>
@@ -324,7 +366,8 @@ export default function Treatment() {
             </div>
 
             <p className="mt-4 text-xs italic leading-5 text-slate-500">
-              Trạng thái: {saveStatus}. Tính toán chỉ mang tính tham khảo, quyết định phụ thuộc vào bác sĩ.
+              Trạng thái: {saveStatus}. Tính toán chỉ mang tính tham khảo, quyết
+              định phụ thuộc vào bác sĩ.
             </p>
           </section>
         </aside>
