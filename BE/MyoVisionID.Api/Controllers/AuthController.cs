@@ -19,42 +19,44 @@ namespace MyoVisionID.Api.Controllers
         }
 
         [HttpPost("login")]
+        [AllowAnonymous]
         public async Task<IActionResult> Login(LoginRequestDto request)
         {
-            var result = await _authService.LoginAsync(request);
-
-            if (result == null)
-            {
-                return Unauthorized(
-                    ApiResponse<string>.Fail("Invalid username or password"));
-            }
-
-            return Ok(ApiResponse<LoginResponseDto>.Ok(result));
+            return Ok(ApiResponse<object>.Ok(await _authService.LoginAsync(request)));
         }
 
-        [Authorize]
+        [HttpPost("refresh-token")]
+        [AllowAnonymous]
+        public IActionResult RefreshToken()
+        {
+            return Ok(ApiResponse<object>.Ok(new
+            {
+                message = "Refresh token endpoint placeholder. Full refresh-token storage will be implemented after Group A security upgrade."
+            }));
+        }
+
         [HttpGet("me")]
+        [Authorize]
         public async Task<IActionResult> Me()
         {
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            var userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            return Ok(ApiResponse<object>.Ok(await _authService.GetMeAsync(userId)));
+        }
 
-            if (userIdClaim == null)
-            {
-                return Unauthorized(
-                    ApiResponse<string>.Fail("Unauthorized"));
-            }
+        [HttpPut("change-password")]
+        [Authorize]
+        public async Task<IActionResult> ChangePassword(ChangePasswordDto request)
+        {
+            var userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            await _authService.ChangePasswordAsync(userId, request);
+            return Ok(ApiResponse<string>.Ok("Password changed successfully."));
+        }
 
-            var userId = long.Parse(userIdClaim.Value);
-
-            var result = await _authService.GetCurrentUserAsync(userId);
-
-            if (result == null)
-            {
-                return NotFound(
-                    ApiResponse<string>.Fail("User not found"));
-            }
-
-            return Ok(ApiResponse<CurrentUserDto>.Ok(result));
+        [HttpPost("logout")]
+        [Authorize]
+        public IActionResult Logout()
+        {
+            return Ok(ApiResponse<string>.Ok("Logged out successfully."));
         }
     }
 }

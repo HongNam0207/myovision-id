@@ -19,27 +19,32 @@ namespace MyoVisionID.Api.Middlewares
             {
                 await _next(context);
             }
+            catch (UnauthorizedAccessException ex)
+            {
+                await WriteError(context, HttpStatusCode.Unauthorized, ex.Message);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                await WriteError(context, HttpStatusCode.NotFound, ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                await WriteError(context, HttpStatusCode.Conflict, ex.Message);
+            }
             catch (Exception ex)
             {
-                await HandleExceptionAsync(context, ex);
+                await WriteError(context, HttpStatusCode.InternalServerError, ex.Message);
             }
         }
 
-        private static Task HandleExceptionAsync(
-            HttpContext context,
-            Exception exception)
+        private static async Task WriteError(HttpContext context, HttpStatusCode status, string message)
         {
+            context.Response.StatusCode = (int)status;
             context.Response.ContentType = "application/json";
 
-            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            var response = ApiResponse<string>.Fail(message);
 
-            var response = ApiResponse<object>.Fail(
-                exception.Message
-            );
-
-            var json = JsonSerializer.Serialize(response);
-
-            return context.Response.WriteAsync(json);
+            await context.Response.WriteAsync(JsonSerializer.Serialize(response));
         }
     }
 }
