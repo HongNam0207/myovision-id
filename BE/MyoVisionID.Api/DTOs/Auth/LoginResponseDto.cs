@@ -1,4 +1,4 @@
-namespace MyoVisionID.Api.DTOs.Auth
+﻿namespace MyoVisionID.Api.DTOs.Auth
 {
     public class LoginResponseDto
     {
@@ -6,7 +6,9 @@ namespace MyoVisionID.Api.DTOs.Auth
         public string Username { get; set; } = string.Empty;
         public string FullName { get; set; } = string.Empty;
         public string AccessToken { get; set; } = string.Empty;
+        public string RefreshToken { get; set; } = string.Empty;
         public List<string> Roles { get; set; } = new();
         public List<string> Permissions { get; set; } = new();
     }
 }
+

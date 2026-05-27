@@ -90,6 +90,8 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<UserRole> UserRoles { get; set; }
 
+    public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
+
     public virtual DbSet<Visit> Visits { get; set; }
 
     public virtual DbSet<VisitApproval> VisitApprovals { get; set; }
@@ -100,6 +102,28 @@ public partial class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<RefreshToken>(entity =>
+        {
+            entity.HasKey(e => e.RefreshTokenId);
+
+            entity.ToTable("refresh_tokens");
+
+            entity.HasIndex(e => e.Token).IsUnique();
+
+            entity.Property(e => e.RefreshTokenId).HasColumnName("refresh_token_id");
+            entity.Property(e => e.UserId).HasColumnName("user_id");
+            entity.Property(e => e.Token).HasMaxLength(500).HasColumnName("token");
+            entity.Property(e => e.ExpiredAt).HasColumnName("expired_at");
+            entity.Property(e => e.IsRevoked).HasColumnName("is_revoked");
+            entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+            entity.Property(e => e.RevokedAt).HasColumnName("revoked_at");
+
+            entity.HasOne(e => e.User)
+                .WithMany()
+                .HasForeignKey(e => e.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+        });
+
         modelBuilder.Entity<Appointment>(entity =>
         {
             entity.HasKey(e => e.AppointmentId).HasName("PK__appointm__A50828FC6DA757F7");
@@ -1745,3 +1769,4 @@ public partial class AppDbContext : DbContext
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }
+

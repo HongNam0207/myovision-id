@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace MyoVisionID.Api.Entities;
@@ -30,4 +30,7 @@ public partial class Clinic
     public virtual ICollection<Patient> Patients { get; set; } = new List<Patient>();
 
     public virtual ICollection<Visit> Visits { get; set; } = new List<Visit>();
+
+    public virtual ICollection<UserClinic> UserClinics { get; set; } = new List<UserClinic>();
 }
+

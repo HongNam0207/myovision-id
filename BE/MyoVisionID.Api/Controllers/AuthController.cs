@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyoVisionID.Api.Common.Models;
 using MyoVisionID.Api.DTOs.Auth;
@@ -60,3 +60,4 @@ namespace MyoVisionID.Api.Controllers
         }
     }
 }
+

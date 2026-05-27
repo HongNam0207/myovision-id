@@ -17,6 +17,17 @@ namespace MyoVisionID.Api.Extensions
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<IClinicService, ClinicService>();
+            services.AddScoped<IUserClinicService, UserClinicService>();
+            services.AddHttpContextAccessor();
+            services.AddScoped<ICurrentUserService, CurrentUserService>();
+            services.AddScoped<IClinicScopeService, ClinicScopeService>();
+            services.AddScoped<IPatientService, PatientService>();
+            services.AddScoped<IParentService, ParentService>();
+            services.AddScoped<IPatientParentService, PatientParentService>();
+            services.AddScoped<IParentPortalService, ParentPortalService>();
+            services.AddScoped<IVisitService, VisitService>();
+            services.AddScoped<IVisitApprovalService, VisitApprovalService>();
             services.AddScoped<IAuthorizationHandler, PermissionHandler>();
 
             return services;
@@ -112,3 +123,9 @@ namespace MyoVisionID.Api.Extensions
         }
     }
 }
+
+
+
+
+
+

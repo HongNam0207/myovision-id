@@ -1,11 +1,14 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using MyoVisionID.Api.Data;
 using MyoVisionID.Api.DTOs.Auth;
+using MyoVisionID.Api.Entities;
 using MyoVisionID.Api.Services.Interfaces;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace MyoVisionID.Api.Services
 {
@@ -23,50 +26,97 @@ namespace MyoVisionID.Api.Services
         public async Task<LoginResponseDto> LoginAsync(LoginRequestDto request)
         {
             var user = await _context.Users
-                .Include(x => x.UserRoles)
-                    .ThenInclude(x => x.Role)
-                .FirstOrDefaultAsync(x =>
-                    x.Username == request.UsernameOrEmail ||
-                    x.Email == request.UsernameOrEmail);
+                .Include(u => u.UserRoles)
+                    .ThenInclude(ur => ur.Role)
+                        .ThenInclude(r => r.RolePermissions)
+                            .ThenInclude(rp => rp.Permission)
+                .FirstOrDefaultAsync(u =>
+                    u.Username == request.UsernameOrEmail ||
+                    u.Email == request.UsernameOrEmail);
 
-            if (user == null || user.PasswordHash != request.Password || user.Status != "ACTIVE")
-                throw new UnauthorizedAccessException("Invalid username/email or password.");
+            if (user == null || user.PasswordHash != request.Password)
+                throw new UnauthorizedAccessException("Invalid username/email or password");
+
+            if (user.Status != "ACTIVE")
+                throw new UnauthorizedAccessException("User account is not active");
 
             user.LastLoginAt = DateTime.UtcNow;
-            await _context.SaveChangesAsync();
 
-            var roles = user.UserRoles.Select(x => x.Role.RoleCode).ToList();
-            var permissions = await GetPermissionCodesAsync(user.UserId);
+            var accessToken = GenerateAccessToken(user);
+            var refreshToken = await CreateRefreshTokenAsync(user.UserId);
+
+            await _context.SaveChangesAsync();
 
             return new LoginResponseDto
             {
                 UserId = user.UserId,
                 Username = user.Username,
                 FullName = user.FullName,
-                Roles = roles,
-                Permissions = permissions,
-                AccessToken = GenerateAccessToken(user.UserId, user.Username, roles, permissions)
+                AccessToken = accessToken,
+                RefreshToken = refreshToken.Token,
+                Roles = user.UserRoles.Select(x => x.Role.RoleCode).ToList(),
+                Permissions = user.UserRoles
+                    .SelectMany(x => x.Role.RolePermissions)
+                    .Select(x => x.Permission.PermissionCode)
+                    .Distinct()
+                    .ToList()
+            };
+        }
+
+        public async Task<RefreshTokenResponseDto> RefreshTokenAsync(RefreshTokenRequestDto request)
+        {
+            var refreshToken = await _context.RefreshTokens
+                .Include(x => x.User)
+                    .ThenInclude(u => u.UserRoles)
+                        .ThenInclude(ur => ur.Role)
+                            .ThenInclude(r => r.RolePermissions)
+                                .ThenInclude(rp => rp.Permission)
+                .FirstOrDefaultAsync(x => x.Token == request.RefreshToken);
+
+            if (refreshToken == null || refreshToken.IsRevoked || refreshToken.ExpiredAt <= DateTime.UtcNow)
+                throw new UnauthorizedAccessException("Invalid refresh token");
+
+            if (refreshToken.User.Status != "ACTIVE")
+                throw new UnauthorizedAccessException("User account is not active");
+
+            refreshToken.IsRevoked = true;
+            refreshToken.RevokedAt = DateTime.UtcNow;
+
+            var newRefreshToken = await CreateRefreshTokenAsync(refreshToken.UserId);
+            var newAccessToken = GenerateAccessToken(refreshToken.User);
+
+            await _context.SaveChangesAsync();
+
+            return new RefreshTokenResponseDto
+            {
+                AccessToken = newAccessToken,
+                RefreshToken = newRefreshToken.Token
             };
         }
 
         public async Task<CurrentUserDto> GetMeAsync(long userId)
         {
             var user = await _context.Users
-                .Include(x => x.UserRoles)
-                    .ThenInclude(x => x.Role)
-                .FirstOrDefaultAsync(x => x.UserId == userId);
+                .Include(u => u.UserRoles)
+                    .ThenInclude(ur => ur.Role)
+                        .ThenInclude(r => r.RolePermissions)
+                            .ThenInclude(rp => rp.Permission)
+                .FirstOrDefaultAsync(u => u.UserId == userId);
 
             if (user == null)
-                throw new KeyNotFoundException("User not found.");
+                throw new KeyNotFoundException("User not found");
 
             return new CurrentUserDto
             {
                 UserId = user.UserId,
                 Username = user.Username,
                 FullName = user.FullName,
-                Email = user.Email,
                 Roles = user.UserRoles.Select(x => x.Role.RoleCode).ToList(),
-                Permissions = await GetPermissionCodesAsync(user.UserId)
+                Permissions = user.UserRoles
+                    .SelectMany(x => x.Role.RolePermissions)
+                    .Select(x => x.Permission.PermissionCode)
+                    .Distinct()
+                    .ToList()
             };
         }
 
@@ -75,10 +125,10 @@ namespace MyoVisionID.Api.Services
             var user = await _context.Users.FindAsync(userId);
 
             if (user == null)
-                throw new KeyNotFoundException("User not found.");
+                throw new KeyNotFoundException("User not found");
 
             if (user.PasswordHash != request.CurrentPassword)
-                throw new UnauthorizedAccessException("Current password is incorrect.");
+                throw new UnauthorizedAccessException("Old password is incorrect");
 
             user.PasswordHash = request.NewPassword;
             user.UpdatedAt = DateTime.UtcNow;
@@ -86,44 +136,84 @@ namespace MyoVisionID.Api.Services
             await _context.SaveChangesAsync();
         }
 
-        private async Task<List<string>> GetPermissionCodesAsync(long userId)
+        public Task ForgotPasswordAsync(ForgotPasswordDto request)
         {
-            return await (
-                from ur in _context.UserRoles
-                join rp in _context.RolePermissions on ur.RoleId equals rp.RoleId
-                join p in _context.Permissions on rp.PermissionId equals p.PermissionId
-                where ur.UserId == userId
-                select p.PermissionCode
-            ).Distinct().ToListAsync();
+            return Task.CompletedTask;
         }
 
-        private string GenerateAccessToken(long userId, string username, List<string> roles, List<string> permissions)
+        public async Task ResetPasswordAsync(ResetPasswordDto request)
         {
-            var key = _configuration["Jwt:Key"] ?? "MyoVisionID_Development_Key_Change_This_At_Least_32_Characters";
-            var issuer = _configuration["Jwt:Issuer"] ?? "MyoVisionID";
-            var audience = _configuration["Jwt:Audience"] ?? "MyoVisionIDClient";
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Username == request.UsernameOrEmail || u.Email == request.UsernameOrEmail);
+
+            if (user == null)
+                throw new KeyNotFoundException("User not found");
+
+            user.PasswordHash = request.NewPassword;
+            user.UpdatedAt = DateTime.UtcNow;
+
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task LogoutAsync(string refreshToken)
+        {
+            var token = await _context.RefreshTokens.FirstOrDefaultAsync(x => x.Token == refreshToken);
+
+            if (token == null)
+                return;
+
+            token.IsRevoked = true;
+            token.RevokedAt = DateTime.UtcNow;
+
+            await _context.SaveChangesAsync();
+        }
+
+        private async Task<RefreshToken> CreateRefreshTokenAsync(long userId)
+        {
+            var token = new RefreshToken
+            {
+                UserId = userId,
+                Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
+                ExpiredAt = DateTime.UtcNow.AddDays(7),
+                CreatedAt = DateTime.UtcNow
+            };
+
+            await _context.RefreshTokens.AddAsync(token);
+            return token;
+        }
+
+        private string GenerateAccessToken(User user)
+        {
+            var jwt = _configuration.GetSection("Jwt");
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt["Key"]!));
 
             var claims = new List<Claim>
             {
-                new(ClaimTypes.NameIdentifier, userId.ToString()),
-                new(ClaimTypes.Name, username)
+                new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+                new Claim(ClaimTypes.Name, user.Username)
             };
 
-            claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
-            claims.AddRange(permissions.Select(permission => new Claim("permission", permission)));
+            foreach (var role in user.UserRoles.Select(x => x.Role.RoleCode))
+                claims.Add(new Claim(ClaimTypes.Role, role));
 
-            var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
-            var credentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);
+            foreach (var permission in user.UserRoles
+                .SelectMany(x => x.Role.RolePermissions)
+                .Select(x => x.Permission.PermissionCode)
+                .Distinct())
+            {
+                claims.Add(new Claim("permission", permission));
+            }
 
             var token = new JwtSecurityToken(
-                issuer,
-                audience,
-                claims,
-                expires: DateTime.UtcNow.AddHours(8),
-                signingCredentials: credentials
+                issuer: jwt["Issuer"],
+                audience: jwt["Audience"],
+                claims: claims,
+                expires: DateTime.UtcNow.AddMinutes(Convert.ToDouble(jwt["ExpireMinutes"] ?? "60")),
+                signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
             );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }
+

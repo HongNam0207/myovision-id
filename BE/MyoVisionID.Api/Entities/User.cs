@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace MyoVisionID.Api.Entities;
@@ -71,6 +71,8 @@ public partial class User
 
     public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
 
+    public virtual ICollection<UserClinic> UserClinics { get; set; } = new List<UserClinic>();
+
     public virtual ICollection<VisitApproval> VisitApprovals { get; set; } = new List<VisitApproval>();
 
     public virtual ICollection<Visit> VisitAssignedDoctors { get; set; } = new List<Visit>();
@@ -79,3 +81,4 @@ public partial class User
 
     public virtual ICollection<VisitStatusLog> VisitStatusLogs { get; set; } = new List<VisitStatusLog>();
 }
+

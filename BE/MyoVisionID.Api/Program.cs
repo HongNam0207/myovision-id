@@ -8,6 +8,20 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("FrontendCors", policy =>
+    {
+        policy
+            .WithOrigins(
+                "http://localhost:5173",
+                "https://localhost:5173"
+            )
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -28,6 +42,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseCors("FrontendCors");
+
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -36,7 +52,9 @@ app.MapControllers();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
     await DatabaseSeeder.SeedAsync(db);
+    await GroupBClinicAccessSeeder.SeedAsync(db);
 }
 
 app.Run();
