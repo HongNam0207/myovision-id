@@ -1,36 +1,95 @@
 import { useEffect, useState } from "react";
 import { clinicApi } from "../../api/clinics.api";
+import { Page, Card, Table, StatusBadge, Notice } from "../../components/ui/AppUI";
 
 export default function ClinicManagementPage() {
   const [clinics, setClinics] = useState([]);
+  const [notice, setNotice] = useState("Đang tải danh sách phòng khám...");
 
   useEffect(() => {
-    clinicApi.getAll()
-      .then((res) => setClinics(res.data?.data?.items || res.data?.data || []))
-      .catch(() => setClinics([]));
+    clinicApi
+      .getAll()
+      .then((res) => {
+        const data = res.data?.data?.items || res.data?.data || [];
+        setClinics(data);
+        setNotice("");
+      })
+      .catch(() => {
+        setClinics([]);
+        setNotice("Không tải được dữ liệu phòng khám.");
+      });
   }, []);
 
+  const columns = [
+    {
+      key: "clinicName",
+      label: "Tên phòng khám",
+      render: (row) => (
+        <div>
+          <b>{row.clinicName || "-"}</b>
+          <div className="hint">{row.clinicCode || "-"}</div>
+        </div>
+      ),
+    },
+    {
+      key: "address",
+      label: "Địa chỉ",
+      render: (row) => row.address || "-",
+    },
+    {
+      key: "contact",
+      label: "Liên hệ",
+      render: (row) => (
+        <div>
+          <div>{row.phone || "-"}</div>
+          <div className="hint">{row.email || "-"}</div>
+        </div>
+      ),
+    },
+    {
+      key: "status",
+      label: "Trạng thái",
+      render: (row) => (
+        <StatusBadge>{row.isActive === false ? "Ngừng hoạt động" : "Đang hoạt động"}</StatusBadge>
+      ),
+    },
+  ];
+
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold">Clinic Management</h1>
-      <p className="mt-1 text-gray-500">Qu?n l� ph�ng kh�m / chi nh�nh.</p>
+    <Page
+      title="Quản lý phòng khám"
+      sub="Quản lý phòng khám, chi nhánh và thông tin liên hệ trong hệ thống MYOVISION ID."
+    >
+      <Notice type={notice.includes("Không") ? "error" : "info"}>{notice}</Notice>
 
-      <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        {clinics.map((c) => (
-          <div key={c.clinicId || c.id} className="rounded-xl border bg-white p-4">
-            <div className="font-semibold">{c.clinicName}</div>
-            <div className="text-sm text-gray-500">{c.clinicCode}</div>
-            <div className="mt-3 text-sm">{c.address}</div>
-            <div className="mt-2 text-sm text-gray-500">{c.phone} {c.email}</div>
-          </div>
-        ))}
+      <div className="grid cards">
+        <Card>
+          <span className="metricLabel">Tổng số phòng khám</span>
+          <strong className="metric">{clinics.length}</strong>
+        </Card>
 
-        {!clinics.length && (
-          <div className="rounded-xl border bg-white p-6 text-gray-500">
-            Chua c� d? li?u clinic.
-          </div>
-        )}
+        <Card>
+          <span className="metricLabel">Đang hoạt động</span>
+          <strong className="metric">
+            {clinics.filter((x) => x.isActive !== false).length}
+          </strong>
+        </Card>
+
+        <Card>
+          <span className="metricLabel">Ngừng hoạt động</span>
+          <strong className="metric">
+            {clinics.filter((x) => x.isActive === false).length}
+          </strong>
+        </Card>
       </div>
-    </div>
+
+      <Card title="Danh sách phòng khám">
+        <Table
+          rows={clinics}
+          columns={columns}
+          empty="Chưa có dữ liệu phòng khám."
+        />
+      </Card>
+    </Page>
   );
 }

@@ -1,8 +1,17 @@
 import { useEffect, useState } from "react";
 import { getAppointmentsApi } from "../api/appointments.api";
+import {
+  Page,
+  Card,
+  Table,
+  Notice,
+  StatusBadge,
+  Button,
+} from "../components/ui/AppUI";
 
 export default function AppointmentList() {
   const [appointments, setAppointments] = useState([]);
+  const [notice, setNotice] = useState("Đang tải danh sách lịch hẹn...");
 
   useEffect(() => {
     loadAppointments();
@@ -11,61 +20,89 @@ export default function AppointmentList() {
   async function loadAppointments() {
     try {
       const res = await getAppointmentsApi();
-      const data = res.data ?? res;
+      const raw = res.data?.data || res.data || res;
 
-      if (Array.isArray(data)) setAppointments(data);
-      else if (Array.isArray(data.items)) setAppointments(data.items);
-      else setAppointments([]);
+      const data = Array.isArray(raw)
+        ? raw
+        : Array.isArray(raw.items)
+        ? raw.items
+        : [];
+
+      setAppointments(data);
+      setNotice("");
     } catch (error) {
       console.error(error);
       setAppointments([]);
+      setNotice("Không tải được dữ liệu lịch hẹn.");
     }
   }
 
+  const columns = [
+    {
+      key: "patient",
+      label: "Bệnh nhi",
+      render: (row) => row.patientName || row.patient?.fullName || "-",
+    },
+    {
+      key: "doctor",
+      label: "Bác sĩ",
+      render: (row) => row.doctorName || row.doctor?.fullName || "-",
+    },
+    {
+      key: "appointmentDatetime",
+      label: "Thời gian hẹn",
+      render: (row) => row.appointmentDatetime || "-",
+    },
+    {
+      key: "appointmentType",
+      label: "Loại hẹn",
+      render: (row) => row.appointmentType || "-",
+    },
+    {
+      key: "status",
+      label: "Trạng thái",
+      render: (row) => <StatusBadge>{row.status || "BOOKED"}</StatusBadge>,
+    },
+  ];
+
   return (
-    <div className="min-h-screen bg-slate-100 p-6">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold">Appointments</h1>
-        <p className="text-slate-500">Appointment management</p>
+    <Page
+      title="Quản lý lịch hẹn"
+      sub="Theo dõi lịch khám, lịch tái khám và trạng thái check-in bệnh nhi."
+      actions={<Button>+ Tạo lịch hẹn</Button>}
+    >
+      <Notice type={notice.includes("Không") ? "error" : "info"}>
+        {notice}
+      </Notice>
+
+      <div className="grid cards">
+        <Card>
+          <span className="metricLabel">Tổng lịch hẹn</span>
+          <strong className="metric">{appointments.length}</strong>
+        </Card>
+
+        <Card>
+          <span className="metricLabel">Đã đặt lịch</span>
+          <strong className="metric">
+            {appointments.filter((x) => x.status === "BOOKED").length}
+          </strong>
+        </Card>
+
+        <Card>
+          <span className="metricLabel">Đã check-in</span>
+          <strong className="metric">
+            {appointments.filter((x) => x.status === "CHECKED_IN").length}
+          </strong>
+        </Card>
       </div>
 
-      <div className="overflow-hidden rounded-2xl bg-white shadow">
-        <table className="min-w-full">
-          <thead className="bg-slate-50">
-            <tr>
-              <th className="px-4 py-3 text-left">Patient</th>
-              <th className="px-4 py-3 text-left">Doctor</th>
-              <th className="px-4 py-3 text-left">Datetime</th>
-              <th className="px-4 py-3 text-left">Type</th>
-              <th className="px-4 py-3 text-left">Status</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {appointments.length === 0 ? (
-              <tr>
-                <td colSpan="5" className="px-4 py-10 text-center">
-                  No appointments
-                </td>
-              </tr>
-            ) : (
-              appointments.map((item) => (
-                <tr key={item.appointmentId || item.id} className="border-t">
-                  <td className="px-4 py-3">{item.patientName || item.patient?.fullName}</td>
-                  <td className="px-4 py-3">{item.doctorName || item.doctor?.fullName}</td>
-                  <td className="px-4 py-3">{item.appointmentDatetime}</td>
-                  <td className="px-4 py-3">{item.appointmentType}</td>
-                  <td className="px-4 py-3">
-                    <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700">
-                      {item.status}
-                    </span>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
-    </div>
+      <Card title="Danh sách lịch hẹn">
+        <Table
+          rows={appointments}
+          columns={columns}
+          empty="Chưa có dữ liệu lịch hẹn."
+        />
+      </Card>
+    </Page>
   );
 }

@@ -2,10 +2,21 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { createBiometricApi, getBiometricsApi } from "../api/measurement.api";
 
+import {
+  Page,
+  Card,
+  Field,
+  Button,
+  Notice,
+  Table,
+  StatusBadge,
+} from "../components/ui/AppUI";
+
 export default function Biometric() {
   const { visitId } = useParams();
+
   const [items, setItems] = useState([]);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState("Đang tải dữ liệu sinh trắc học...");
 
   const [form, setForm] = useState({
     eyeSide: "OD",
@@ -30,18 +41,44 @@ export default function Biometric() {
   async function loadBiometrics() {
     try {
       const res = await getBiometricsApi(visitId);
-      const data = res.data ?? res;
-      if (Array.isArray(data)) setItems(data);
-      else if (Array.isArray(data.items)) setItems(data.items);
-      else setItems([]);
+      const raw = res.data?.data || res.data || res;
+
+      if (Array.isArray(raw)) {
+        setItems(raw);
+      } else if (Array.isArray(raw.items)) {
+        setItems(raw.items);
+      } else {
+        setItems([]);
+      }
+
+      setMessage("");
     } catch (error) {
       console.error(error);
       setItems([]);
+      setMessage("Không tải được dữ liệu sinh trắc học.");
     }
   }
 
   function updateField(name, value) {
     setForm((prev) => ({ ...prev, [name]: value }));
+  }
+
+  function resetForm() {
+    setForm({
+      eyeSide: "OD",
+      axialLengthMm: "",
+      k1: "",
+      k2: "",
+      kmax: "",
+      pachymetryUm: "",
+      pupilSizeMm: "",
+      tbutSeconds: "",
+      iopMmhg: "",
+      cornealRadiusMm: "",
+      alCrRatio: "",
+      deviceName: "",
+      note: "",
+    });
   }
 
   async function handleSubmit(e) {
@@ -64,103 +101,168 @@ export default function Biometric() {
 
     try {
       await createBiometricApi(visitId, payload);
-      setMessage("Saved successfully");
+      setMessage("Đã lưu dữ liệu sinh trắc học.");
+      resetForm();
       await loadBiometrics();
     } catch (error) {
       console.error(error);
-      setMessage(error.response?.data?.message || "Save failed");
+      setMessage(error.response?.data?.message || "Lưu dữ liệu thất bại.");
     }
   }
 
+  const columns = [
+    {
+      key: "eyeSide",
+      label: "Mắt",
+      render: (row) => <StatusBadge>{row.eyeSide || "-"}</StatusBadge>,
+    },
+    {
+      key: "axialLengthMm",
+      label: "AL",
+      render: (row) => row.axialLengthMm ?? "-",
+    },
+    {
+      key: "k1",
+      label: "K1",
+      render: (row) => row.k1 ?? "-",
+    },
+    {
+      key: "k2",
+      label: "K2",
+      render: (row) => row.k2 ?? "-",
+    },
+    {
+      key: "iopMmhg",
+      label: "IOP",
+      render: (row) => row.iopMmhg ?? "-",
+    },
+    {
+      key: "deviceName",
+      label: "Thiết bị",
+      render: (row) => row.deviceName || "-",
+    },
+  ];
+
   return (
-    <div className="min-h-screen bg-slate-100 p-6">
-      <div className="mb-6">
-        <Link to={`/visits/${visitId}`} className="text-blue-600">
-          Back to visit
-        </Link>
-        <h1 className="mt-3 text-3xl font-bold">Biometric</h1>
-        <p className="text-slate-500">Visit ID: {visitId}</p>
-      </div>
+    <Page
+      title="Biometric"
+      sub={`Nhập dữ liệu sinh trắc học mắt cho lượt khám #${visitId}.`}
+      actions={
+        <>
+          <Link className="btn ghost" to={`/visits/${visitId}`}>
+            Quay lại Visit
+          </Link>
 
-      <form onSubmit={handleSubmit} className="mb-6 rounded-2xl bg-white p-6 shadow">
-        <div className="grid gap-4 md:grid-cols-3">
-          <label>
-            <span className="text-sm font-medium">Eye side</span>
-            <select
+          <StatusBadge>OPTOMETRIST</StatusBadge>
+        </>
+      }
+    >
+      <Notice
+        type={
+          message.includes("Không") || message.includes("thất bại")
+            ? "error"
+            : message.includes("Đã")
+            ? "ok"
+            : "info"
+        }
+      >
+        {message}
+      </Notice>
+
+      <form onSubmit={handleSubmit}>
+        <Card title="Thêm dữ liệu sinh trắc học">
+          <div className="form">
+            <Field
+              label="Mắt"
               value={form.eyeSide}
-              onChange={(e) => updateField("eyeSide", e.target.value)}
-              className="mt-1 w-full rounded-xl border px-4 py-3"
-            >
-              <option value="OD">OD</option>
-              <option value="OS">OS</option>
-            </select>
-          </label>
+              onChange={(v) => updateField("eyeSide", v)}
+              options={["OD", "OS"]}
+            />
 
-          <Input label="Axial Length mm" value={form.axialLengthMm} onChange={(v) => updateField("axialLengthMm", v)} />
-          <Input label="K1" value={form.k1} onChange={(v) => updateField("k1", v)} />
-          <Input label="K2" value={form.k2} onChange={(v) => updateField("k2", v)} />
-          <Input label="Kmax" value={form.kmax} onChange={(v) => updateField("kmax", v)} />
-          <Input label="Pachymetry um" value={form.pachymetryUm} onChange={(v) => updateField("pachymetryUm", v)} />
-          <Input label="Pupil size mm" value={form.pupilSizeMm} onChange={(v) => updateField("pupilSizeMm", v)} />
-          <Input label="TBUT seconds" value={form.tbutSeconds} onChange={(v) => updateField("tbutSeconds", v)} />
-          <Input label="IOP mmHg" value={form.iopMmhg} onChange={(v) => updateField("iopMmhg", v)} />
-          <Input label="Corneal radius mm" value={form.cornealRadiusMm} onChange={(v) => updateField("cornealRadiusMm", v)} />
-          <Input label="AL/CR ratio" value={form.alCrRatio} onChange={(v) => updateField("alCrRatio", v)} />
-          <Input label="Device name" value={form.deviceName} onChange={(v) => updateField("deviceName", v)} />
-        </div>
+            <Field
+              label="Axial Length (mm)"
+              value={form.axialLengthMm}
+              onChange={(v) => updateField("axialLengthMm", v)}
+            />
 
-        {message && <p className="mt-5 rounded-xl bg-slate-100 p-3">{message}</p>}
+            <Field
+              label="K1"
+              value={form.k1}
+              onChange={(v) => updateField("k1", v)}
+            />
 
-        <button className="mt-6 rounded-xl bg-blue-600 px-5 py-3 font-semibold text-white">
-          Save Biometric
-        </button>
+            <Field
+              label="K2"
+              value={form.k2}
+              onChange={(v) => updateField("k2", v)}
+            />
+
+            <Field
+              label="Kmax"
+              value={form.kmax}
+              onChange={(v) => updateField("kmax", v)}
+            />
+
+            <Field
+              label="Pachymetry (um)"
+              value={form.pachymetryUm}
+              onChange={(v) => updateField("pachymetryUm", v)}
+            />
+
+            <Field
+              label="Pupil size (mm)"
+              value={form.pupilSizeMm}
+              onChange={(v) => updateField("pupilSizeMm", v)}
+            />
+
+            <Field
+              label="TBUT (seconds)"
+              value={form.tbutSeconds}
+              onChange={(v) => updateField("tbutSeconds", v)}
+            />
+
+            <Field
+              label="IOP (mmHg)"
+              value={form.iopMmhg}
+              onChange={(v) => updateField("iopMmhg", v)}
+            />
+
+            <Field
+              label="Corneal radius (mm)"
+              value={form.cornealRadiusMm}
+              onChange={(v) => updateField("cornealRadiusMm", v)}
+            />
+
+            <Field
+              label="AL/CR ratio"
+              value={form.alCrRatio}
+              onChange={(v) => updateField("alCrRatio", v)}
+            />
+
+            <Field
+              label="Device name"
+              value={form.deviceName}
+              onChange={(v) => updateField("deviceName", v)}
+            />
+          </div>
+
+          <div className="actions" style={{ marginTop: 20 }}>
+            <Button type="submit">Lưu Biometric</Button>
+
+            <Button variant="ghost" onClick={resetForm}>
+              Làm mới form
+            </Button>
+          </div>
+        </Card>
       </form>
 
-      <div className="overflow-hidden rounded-2xl bg-white shadow">
-        <table className="min-w-full">
-          <thead className="bg-slate-50">
-            <tr>
-              <th className="px-4 py-3 text-left">Eye</th>
-              <th className="px-4 py-3 text-left">AL</th>
-              <th className="px-4 py-3 text-left">K1</th>
-              <th className="px-4 py-3 text-left">K2</th>
-              <th className="px-4 py-3 text-left">IOP</th>
-              <th className="px-4 py-3 text-left">Device</th>
-            </tr>
-          </thead>
-          <tbody>
-            {items.length === 0 ? (
-              <tr>
-                <td colSpan="6" className="px-4 py-10 text-center">No data</td>
-              </tr>
-            ) : (
-              items.map((item) => (
-                <tr key={item.biometricId || item.id} className="border-t">
-                  <td className="px-4 py-3">{item.eyeSide}</td>
-                  <td className="px-4 py-3">{item.axialLengthMm}</td>
-                  <td className="px-4 py-3">{item.k1}</td>
-                  <td className="px-4 py-3">{item.k2}</td>
-                  <td className="px-4 py-3">{item.iopMmhg}</td>
-                  <td className="px-4 py-3">{item.deviceName}</td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-}
-
-function Input({ label, value, onChange }) {
-  return (
-    <label className="block">
-      <span className="text-sm font-medium text-slate-700">{label}</span>
-      <input
-        value={value ?? ""}
-        onChange={(e) => onChange(e.target.value)}
-        className="mt-1 w-full rounded-xl border px-4 py-3 outline-none focus:border-blue-500"
-      />
-    </label>
+      <Card title="Dữ liệu sinh trắc học đã nhập">
+        <Table
+          rows={items}
+          columns={columns}
+          empty="Chưa có dữ liệu sinh trắc học."
+        />
+      </Card>
+    </Page>
   );
 }

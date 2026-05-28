@@ -6,11 +6,21 @@ import {
   getRiskFactorsApi,
 } from "../api/risk.api";
 
+import {
+  Page,
+  Card,
+  Button,
+  Notice,
+  StatusBadge,
+  Table,
+} from "../components/ui/AppUI";
+
 export default function RiskAssessment() {
   const { visitId } = useParams();
+
   const [risk, setRisk] = useState(null);
   const [factors, setFactors] = useState([]);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState("Đang tải đánh giá nguy cơ...");
 
   useEffect(() => {
     loadRisk();
@@ -19,21 +29,30 @@ export default function RiskAssessment() {
   async function loadRisk() {
     try {
       const res = await getRiskAssessmentApi(visitId);
-      const data = res.data ?? res;
+      const data = res.data?.data || res.data || res;
+
       setRisk(data);
 
       const riskId = data?.riskAssessmentId || data?.id;
+
       if (riskId) {
         const factorRes = await getRiskFactorsApi(riskId);
-        const factorData = factorRes.data ?? factorRes;
+        const raw = factorRes.data?.data || factorRes.data || factorRes;
 
-        if (Array.isArray(factorData)) setFactors(factorData);
-        else if (Array.isArray(factorData.items)) setFactors(factorData.items);
-        else setFactors([]);
+        if (Array.isArray(raw)) {
+          setFactors(raw);
+        } else if (Array.isArray(raw.items)) {
+          setFactors(raw.items);
+        } else {
+          setFactors([]);
+        }
       }
+
+      setMessage("");
     } catch {
       setRisk(null);
       setFactors([]);
+      setMessage("Chưa có đánh giá nguy cơ cho lượt khám này.");
     }
   }
 
@@ -42,96 +61,121 @@ export default function RiskAssessment() {
 
     try {
       await calculateRiskAssessmentApi(visitId);
-      setMessage("Risk calculated successfully");
+      setMessage("Đã tính toán đánh giá nguy cơ.");
       await loadRisk();
     } catch (error) {
       console.error(error);
-      setMessage(error.response?.data?.message || "Calculate failed");
+      setMessage(error.response?.data?.message || "Tính nguy cơ thất bại.");
     }
   }
 
+  const factorColumns = [
+    {
+      key: "factorName",
+      label: "Yếu tố",
+      render: (row) => row.factorName || row.factorCode || "-",
+    },
+    {
+      key: "factorValue",
+      label: "Giá trị",
+      render: (row) => row.factorValue || "-",
+    },
+    {
+      key: "score",
+      label: "Điểm",
+      render: (row) => row.score ?? "-",
+    },
+    {
+      key: "impactLevel",
+      label: "Ảnh hưởng",
+      render: (row) => <StatusBadge>{row.impactLevel || "-"}</StatusBadge>,
+    },
+  ];
+
   return (
-    <div className="min-h-screen bg-slate-100 p-6">
-      <div className="mb-6 flex items-center justify-between">
-        <div>
-          <Link to={`/visits/${visitId}`} className="text-blue-600">
-            Back to visit
+    <Page
+      title="Risk Assessment"
+      sub={`Đánh giá nguy cơ tiến triển cận thị cho lượt khám #${visitId}.`}
+      actions={
+        <>
+          <Link className="btn ghost" to={`/visits/${visitId}`}>
+            Quay lại Visit
           </Link>
-          <h1 className="mt-3 text-3xl font-bold">Risk Assessment</h1>
-          <p className="text-slate-500">Visit ID: {visitId}</p>
-        </div>
 
-        <button
-          onClick={calculateRisk}
-          className="rounded-xl bg-blue-600 px-5 py-3 font-semibold text-white"
-        >
-          Calculate Risk
-        </button>
-      </div>
-
-      {message && <p className="mb-5 rounded-xl bg-white p-3 shadow">{message}</p>}
+          <Button onClick={calculateRisk}>
+            Tính nguy cơ
+          </Button>
+        </>
+      }
+    >
+      <Notice
+        type={
+          message.includes("thất bại")
+            ? "error"
+            : message.includes("Đã")
+            ? "ok"
+            : "info"
+        }
+      >
+        {message}
+      </Notice>
 
       {!risk ? (
-        <div className="rounded-2xl bg-white p-6 shadow">
-          No risk assessment yet
-        </div>
+        <Card>
+          <div className="empty">
+            Chưa có dữ liệu đánh giá nguy cơ.
+          </div>
+        </Card>
       ) : (
         <>
-          <div className="grid gap-4 md:grid-cols-4">
-            <Card label="Total Score" value={risk.totalScore ?? "-"} />
-            <Card label="Risk Level" value={risk.riskLevel ?? "-"} />
-            <Card label="AL/CR Warning" value={risk.alCrWarning ? "Yes" : "No"} />
-            <Card label="Progression Warning" value={risk.progressionWarning ? "Yes" : "No"} />
+          <div className="grid cards">
+            <Card>
+              <span className="metricLabel">Tổng điểm</span>
+              <strong className="metric">{risk.totalScore ?? "-"}</strong>
+            </Card>
+
+            <Card>
+              <span className="metricLabel">Mức nguy cơ</span>
+              <strong className="metric">{risk.riskLevel ?? "-"}</strong>
+            </Card>
+
+            <Card>
+              <span className="metricLabel">Cảnh báo AL/CR</span>
+              <strong className="metric">
+                {risk.alCrWarning ? "Có" : "Không"}
+              </strong>
+            </Card>
+
+            <Card>
+              <span className="metricLabel">Cảnh báo tiến triển</span>
+              <strong className="metric">
+                {risk.progressionWarning ? "Có" : "Không"}
+              </strong>
+            </Card>
           </div>
 
-          <div className="mt-6 rounded-2xl bg-white p-6 shadow">
-            <h2 className="mb-3 text-lg font-semibold">Recommendation</h2>
-            <p className="whitespace-pre-wrap text-slate-700">
-              {risk.recommendation || "No recommendation"}
-            </p>
-          </div>
+          <Card title="Khuyến nghị">
+            <div
+              className="notice"
+              style={{
+                whiteSpace: "pre-wrap",
+                lineHeight: 1.7,
+                fontWeight: 500,
+              }}
+            >
+              {risk.recommendation || "Chưa có khuyến nghị."}
+            </div>
+          </Card>
 
-          <div className="mt-6 overflow-hidden rounded-2xl bg-white shadow">
-            <table className="min-w-full">
-              <thead className="bg-slate-50">
-                <tr>
-                  <th className="px-4 py-3 text-left">Factor</th>
-                  <th className="px-4 py-3 text-left">Value</th>
-                  <th className="px-4 py-3 text-left">Score</th>
-                  <th className="px-4 py-3 text-left">Impact</th>
-                </tr>
-              </thead>
-              <tbody>
-                {factors.length === 0 ? (
-                  <tr>
-                    <td colSpan="4" className="px-4 py-10 text-center">
-                      No factors
-                    </td>
-                  </tr>
-                ) : (
-                  factors.map((factor) => (
-                    <tr key={factor.riskFactorId || factor.id} className="border-t">
-                      <td className="px-4 py-3">{factor.factorName || factor.factorCode}</td>
-                      <td className="px-4 py-3">{factor.factorValue}</td>
-                      <td className="px-4 py-3">{factor.score}</td>
-                      <td className="px-4 py-3">{factor.impactLevel}</td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
+          <Card title="Yếu tố nguy cơ">
+            <Table
+              rows={factors}
+              columns={factorColumns}
+              empty="Chưa có dữ liệu yếu tố nguy cơ."
+            />
+          </Card>
         </>
       )}
-    </div>
-  );
-}
-
-function Card({ label, value }) {
-  return (
-    <div className="rounded-2xl bg-white p-5 shadow">
-      <p className="text-sm text-slate-500">{label}</p>
-      <p className="mt-2 text-2xl font-bold">{value}</p>
-    </div>
+    </Page>
   );
 }

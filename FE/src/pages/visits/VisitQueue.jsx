@@ -1,20 +1,43 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ClipboardList, Search } from "lucide-react";
+import { ClipboardList } from "lucide-react";
 import { visitApi } from "../../api/visits.api";
+
+import {
+  Page,
+  Card,
+  Field,
+  Button,
+  Table,
+  Notice,
+  StatusBadge,
+} from "../../components/ui/AppUI";
 
 export default function VisitQueue() {
   const navigate = useNavigate();
+
   const [visits, setVisits] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const [keyword, setKeyword] = useState("");
+
+  const [notice, setNotice] = useState(
+    "Đang tải danh sách lượt khám..."
+  );
 
   async function loadVisits() {
     try {
       const res = await visitApi.getAll();
+
       const data = res.data?.data || res.data;
+
       setVisits(data.items || data || []);
+      setNotice("");
     } catch (error) {
       console.error(error);
+
+      setVisits([]);
+      setNotice("Không tải được dữ liệu lượt khám.");
     } finally {
       setLoading(false);
     }
@@ -24,91 +47,211 @@ export default function VisitQueue() {
     loadVisits();
   }, []);
 
-  function getStatusClass(status) {
-    if (status === "COMPLETED") return "dd-badge-green";
-    if (status === "CANCELLED") return "dd-badge-orange";
-    return "dd-badge-blue";
+  const filteredVisits = useMemo(() => {
+    const q = keyword.toLowerCase();
+
+    return visits.filter(
+      (v) =>
+        (v.visitCode || "")
+          .toLowerCase()
+          .includes(q) ||
+
+        (
+          v.patientName ||
+          v.fullName ||
+          v.patient?.fullName ||
+          ""
+        )
+          .toLowerCase()
+          .includes(q)
+    );
+  }, [visits, keyword]);
+
+  function renderStatus(status) {
+    return (
+      <StatusBadge>
+        {status || "CREATED"}
+      </StatusBadge>
+    );
   }
 
+  const columns = [
+    {
+      key: "visitCode",
+      label: "Mã lượt khám",
+      render: (row) => (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+          }}
+        >
+          <div
+            style={{
+              width: 42,
+              height: 42,
+              borderRadius: 14,
+              background: "var(--brand-soft)",
+              display: "grid",
+              placeItems: "center",
+              color: "var(--brand-dark)",
+            }}
+          >
+            <ClipboardList size={18} />
+          </div>
+
+          <div>
+            <b>{row.visitCode || "-"}</b>
+
+            <div className="hint">
+              {row.visitType || "-"}
+            </div>
+          </div>
+        </div>
+      ),
+    },
+
+    {
+      key: "patient",
+      label: "Bệnh nhi",
+      render: (row) =>
+        row.patientName ||
+        row.fullName ||
+        row.patient?.fullName ||
+        "-",
+    },
+
+    {
+      key: "visitDate",
+      label: "Ngày khám",
+      render: (row) => row.visitDate || "-",
+    },
+
+    {
+      key: "status",
+      label: "Workflow",
+      render: (row) => renderStatus(row.status),
+    },
+
+    {
+      key: "chiefComplaint",
+      label: "Lý do khám",
+      render: (row) =>
+        row.chiefComplaint || "-",
+    },
+
+    {
+      key: "action",
+      label: "Chi tiết",
+      render: (row) => (
+        <Button
+          variant="ghost"
+          onClick={() =>
+            navigate(`/visits/${row.visitId}`)
+          }
+        >
+          Xem Visit
+        </Button>
+      ),
+    },
+  ];
+
   return (
-    <div>
-      <div style={{ marginBottom: 24 }}>
-        <h1 className="dd-page-title">H�ng ch? lu?t kh�m</h1>
-        <p className="dd-page-subtitle">
-          Theo d�i tr?ng th�i workflow kh�m m?t c?a b?nh nhi
-        </p>
-      </div>
-
-      <div
-        className="dd-card"
-        style={{
-          marginBottom: 20,
-          display: "flex",
-          alignItems: "center",
-          gap: 12,
-        }}
+    <Page
+      title="Hàng chờ lượt khám"
+      sub="Theo dõi workflow khám mắt và trạng thái xử lý bệnh nhi."
+      actions={
+        <Button>
+          + Tạo lượt khám
+        </Button>
+      }
+    >
+      <Notice
+        type={
+          notice.includes("Không")
+            ? "error"
+            : "info"
+        }
       >
-        <Search size={18} color="#6B8793" />
-        <input className="dd-input" placeholder="T�m theo m� lu?t kh�m ho?c b?nh nhi..." />
+        {notice}
+      </Notice>
+
+      <div className="grid cards">
+        <Card>
+          <span className="metricLabel">
+            Tổng lượt khám
+          </span>
+
+          <strong className="metric">
+            {visits.length}
+          </strong>
+        </Card>
+
+        <Card>
+          <span className="metricLabel">
+            Đang chờ xử lý
+          </span>
+
+          <strong className="metric">
+            {
+              visits.filter(
+                (x) =>
+                  x.status !== "COMPLETED" &&
+                  x.status !== "CANCELLED"
+              ).length
+            }
+          </strong>
+        </Card>
+
+        <Card>
+          <span className="metricLabel">
+            Hoàn tất
+          </span>
+
+          <strong className="metric">
+            {
+              visits.filter(
+                (x) =>
+                  x.status === "COMPLETED"
+              ).length
+            }
+          </strong>
+        </Card>
       </div>
 
-      <div className="dd-card">
+      <Card title="Tìm kiếm lượt khám">
+        <div className="form inline">
+          <Field
+            label="Tìm kiếm"
+            value={keyword}
+            onChange={setKeyword}
+          />
+
+          <div className="actions">
+            <Button
+              variant="ghost"
+              onClick={() => setKeyword("")}
+            >
+              Làm mới
+            </Button>
+          </div>
+        </div>
+      </Card>
+
+      <Card title="Danh sách workflow">
         {loading ? (
-          <div>�ang t?i lu?t kh�m...</div>
+          <Notice>
+            Đang tải dữ liệu lượt khám...
+          </Notice>
         ) : (
-          <table className="dd-table">
-            <thead>
-              <tr>
-                <th>M� visit</th>
-                <th>B?nh nhi</th>
-                <th>Lo?i kh�m</th>
-                <th>Ng�y kh�m</th>
-                <th>Tr?ng th�i</th>
-                <th>L� do kh�m</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {visits.map((visit) => (
-                <tr
-                  key={visit.visitId}
-                  onClick={() => navigate(`/visits/${visit.visitId}`)}
-                  style={{ cursor: "pointer" }}
-                >
-                  <td>
-                    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                      <div
-                        style={{
-                          width: 38,
-                          height: 38,
-                          borderRadius: 12,
-                          background: "var(--dd-primary-light)",
-                          display: "grid",
-                          placeItems: "center",
-                          color: "var(--dd-primary-dark)",
-                        }}
-                      >
-                        <ClipboardList size={18} />
-                      </div>
-                      <strong>{visit.visitCode}</strong>
-                    </div>
-                  </td>
-
-                  <td>{visit.patientName || visit.fullName || visit.patient?.fullName || "-"}</td>
-                  <td>{visit.visitType || "-"}</td>
-                  <td>{visit.visitDate || "-"}</td>
-                  <td>
-                    <span className={`dd-badge ${getStatusClass(visit.status)}`}>
-                      {visit.status}
-                    </span>
-                  </td>
-                  <td>{visit.chiefComplaint || "-"}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <Table
+            rows={filteredVisits}
+            columns={columns}
+            empty="Chưa có dữ liệu lượt khám."
+          />
         )}
-      </div>
-    </div>
+      </Card>
+    </Page>
   );
 }

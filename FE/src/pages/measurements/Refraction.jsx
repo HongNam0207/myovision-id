@@ -1,12 +1,21 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { measurementApi } from "../../api/measurement.api";
+import {
+  Page,
+  Card,
+  Field,
+  Button,
+  Notice,
+  Table,
+  StatusBadge,
+} from "../../components/ui/AppUI";
 
 export default function Refraction() {
   const { visitId } = useParams();
 
   const [items, setItems] = useState([]);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState("Đang tải dữ liệu khúc xạ...");
 
   const [form, setForm] = useState({
     eyeSide: "OD",
@@ -24,8 +33,11 @@ export default function Refraction() {
       const res = await measurementApi.getRefractions(visitId);
       const data = res.data?.data || res.data;
       setItems(data.items || data || []);
+      setMessage("");
     } catch (error) {
       console.error(error);
+      setItems([]);
+      setMessage("Không tải được dữ liệu khúc xạ.");
     }
   }
 
@@ -43,7 +55,9 @@ export default function Refraction() {
 
     try {
       await measurementApi.createRefraction(visitId, form);
-      setMessage("�� luu d? li?u kh�c x?.");
+
+      setMessage("Đã lưu dữ liệu khúc xạ.");
+
       setForm({
         eyeSide: "OD",
         measurementType: "AUTO_REFRACTION",
@@ -54,105 +68,175 @@ export default function Refraction() {
         bcva: "",
         note: "",
       });
+
       loadData();
     } catch (error) {
       console.error(error);
-      setMessage("Luu th?t b?i. Ki?m tra axis 0-180 ho?c d? li?u nh?p.");
+      setMessage("Lưu thất bại. Vui lòng kiểm tra axis 0-180 hoặc dữ liệu nhập.");
     }
   }
 
+  const columns = [
+    {
+      key: "eyeSide",
+      label: "Mắt",
+      render: (row) => (
+        <StatusBadge>
+          {row.eyeSide || "-"}
+        </StatusBadge>
+      ),
+    },
+    {
+      key: "measurementType",
+      label: "Loại đo",
+      render: (row) => row.measurementType || "-",
+    },
+    {
+      key: "sph",
+      label: "SPH",
+      render: (row) => row.sph ?? "-",
+    },
+    {
+      key: "cyl",
+      label: "CYL",
+      render: (row) => row.cyl ?? "-",
+    },
+    {
+      key: "axisDegree",
+      label: "Axis",
+      render: (row) => row.axisDegree ?? "-",
+    },
+    {
+      key: "va",
+      label: "VA",
+      render: (row) => row.va || "-",
+    },
+    {
+      key: "bcva",
+      label: "BCVA",
+      render: (row) => row.bcva || "-",
+    },
+    {
+      key: "ser",
+      label: "SER",
+      render: (row) => <b>{row.ser ?? "-"}</b>,
+    },
+  ];
+
   return (
-    <div>
-      <h1 className="dd-page-title">Refraction</h1>
-      <p className="dd-page-subtitle">
-        Nh?p d? li?u kh�c x? m?t ph?i/tr�i cho visit #{visitId}
-      </p>
+    <Page
+      title="Refraction"
+      sub={`Nhập dữ liệu khúc xạ mắt phải/trái cho lượt khám #${visitId}.`}
+      actions={
+        <StatusBadge>
+          OPTOMETRIST
+        </StatusBadge>
+      }
+    >
+      <Notice
+        type={
+          message.includes("thất bại") || message.includes("Không")
+            ? "error"
+            : message.includes("Đã")
+            ? "ok"
+            : "info"
+        }
+      >
+        {message}
+      </Notice>
 
-      {message && (
-        <div className="dd-card" style={{ marginBottom: 18, fontWeight: 800 }}>
-          {message}
-        </div>
-      )}
+      <form onSubmit={handleSubmit}>
+        <Card title="Thêm dữ liệu khúc xạ">
+          <div className="form">
+            <Field
+              label="Mắt"
+              value={form.eyeSide}
+              onChange={(v) => updateField("eyeSide", v)}
+              options={["OD", "OS"]}
+            />
 
-      <form onSubmit={handleSubmit} className="dd-card" style={{ marginBottom: 24 }}>
-        <h2 style={{ marginTop: 0, color: "var(--dd-primary-dark)" }}>
-          Th�m d? li?u kh�c x?
-        </h2>
+            <Field
+              label="Loại đo"
+              value={form.measurementType}
+              onChange={(v) => updateField("measurementType", v)}
+              options={[
+                "AUTO_REFRACTION",
+                "CYCLOPLEGIC",
+                "RETINOSCOPY",
+                "SUBJECTIVE",
+              ]}
+            />
 
-        <div className="dd-form-grid">
-          <label>
-            <div style={{ fontWeight: 800, marginBottom: 8 }}>M?t</div>
-            <select className="dd-input" value={form.eyeSide} onChange={(e) => updateField("eyeSide", e.target.value)}>
-              <option value="OD">OD - M?t ph?i</option>
-              <option value="OS">OS - M?t tr�i</option>
-            </select>
-          </label>
+            <Field
+              label="SPH"
+              value={form.sph}
+              onChange={(v) => updateField("sph", v)}
+            />
 
-          <label>
-            <div style={{ fontWeight: 800, marginBottom: 8 }}>Lo?i do</div>
-            <select className="dd-input" value={form.measurementType} onChange={(e) => updateField("measurementType", e.target.value)}>
-              <option value="AUTO_REFRACTION">Auto Refraction</option>
-              <option value="CYCLOPLEGIC">Sau li?t di?u ti?t</option>
-              <option value="RETINOSCOPY">Soi b�ng d?ng t?</option>
-              <option value="SUBJECTIVE">Ch? quan</option>
-            </select>
-          </label>
+            <Field
+              label="CYL"
+              value={form.cyl}
+              onChange={(v) => updateField("cyl", v)}
+            />
 
-          <Field label="SPH" value={form.sph} onChange={(v) => updateField("sph", v)} />
-          <Field label="CYL" value={form.cyl} onChange={(v) => updateField("cyl", v)} />
-          <Field label="Axis 0-180" value={form.axisDegree} onChange={(v) => updateField("axisDegree", v)} />
-          <Field label="VA" value={form.va} onChange={(v) => updateField("va", v)} />
-          <Field label="BCVA" value={form.bcva} onChange={(v) => updateField("bcva", v)} />
-          <Field label="Ghi ch�" value={form.note} onChange={(v) => updateField("note", v)} />
-        </div>
+            <Field
+              label="Axis 0-180"
+              value={form.axisDegree}
+              onChange={(v) => updateField("axisDegree", v)}
+            />
 
-        <button className="dd-btn dd-btn-primary">Luu Refraction</button>
+            <Field
+              label="VA"
+              value={form.va}
+              onChange={(v) => updateField("va", v)}
+            />
+
+            <Field
+              label="BCVA"
+              value={form.bcva}
+              onChange={(v) => updateField("bcva", v)}
+            />
+
+            <Field
+              label="Ghi chú"
+              value={form.note}
+              onChange={(v) => updateField("note", v)}
+            />
+          </div>
+
+          <div className="actions" style={{ marginTop: 20 }}>
+            <Button type="submit">
+              Lưu Refraction
+            </Button>
+
+            <Button
+              variant="ghost"
+              onClick={() =>
+                setForm({
+                  eyeSide: "OD",
+                  measurementType: "AUTO_REFRACTION",
+                  sph: "",
+                  cyl: "",
+                  axisDegree: "",
+                  va: "",
+                  bcva: "",
+                  note: "",
+                })
+              }
+            >
+              Làm mới form
+            </Button>
+          </div>
+        </Card>
       </form>
 
-      <div className="dd-card">
-        <h2 style={{ marginTop: 0, color: "var(--dd-primary-dark)" }}>
-          D? li?u d� nh?p
-        </h2>
-
-        <table className="dd-table">
-          <thead>
-            <tr>
-              <th>M?t</th>
-              <th>Lo?i do</th>
-              <th>SPH</th>
-              <th>CYL</th>
-              <th>Axis</th>
-              <th>VA</th>
-              <th>BCVA</th>
-              <th>SER</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {items.map((x) => (
-              <tr key={x.refractionId}>
-                <td>{x.eyeSide}</td>
-                <td>{x.measurementType}</td>
-                <td>{x.sph}</td>
-                <td>{x.cyl}</td>
-                <td>{x.axisDegree}</td>
-                <td>{x.va}</td>
-                <td>{x.bcva}</td>
-                <td><strong>{x.ser}</strong></td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-}
-
-function Field({ label, value, onChange }) {
-  return (
-    <label>
-      <div style={{ fontWeight: 800, marginBottom: 8 }}>{label}</div>
-      <input className="dd-input" value={value} onChange={(e) => onChange(e.target.value)} />
-    </label>
+      <Card title="Dữ liệu khúc xạ đã nhập">
+        <Table
+          rows={items}
+          columns={columns}
+          empty="Chưa có dữ liệu khúc xạ."
+        />
+      </Card>
+    </Page>
   );
 }

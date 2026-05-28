@@ -2,18 +2,35 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { visitApi } from "../../api/visits.api";
 
+import {
+  Page,
+  Card,
+  Notice,
+  StatusBadge,
+  Table,
+} from "../../components/ui/AppUI";
+
 export default function VisitDetail() {
   const { visitId } = useParams();
+
   const [visit, setVisit] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [notice, setNotice] = useState(
+    "Đang tải dữ liệu lượt khám..."
+  );
 
   async function loadVisit() {
     try {
       const res = await visitApi.getById(visitId);
+
       const data = res.data?.data || res.data;
+
       setVisit(data);
+      setNotice("");
     } catch (error) {
       console.error(error);
+      setVisit(null);
+      setNotice("Không tìm thấy dữ liệu lượt khám.");
     } finally {
       setLoading(false);
     }
@@ -24,78 +41,126 @@ export default function VisitDetail() {
   }, [visitId]);
 
   if (loading) {
-    return <div className="dd-card">�ang t?i lu?t kh�m...</div>;
+    return (
+      <Page
+        title="Visit Detail"
+        sub={`Đang tải lượt khám #${visitId}.`}
+      >
+        <Notice>{notice}</Notice>
+      </Page>
+    );
   }
 
   if (!visit) {
-    return <div className="dd-card">Kh�ng t�m th?y lu?t kh�m.</div>;
+    return (
+      <Page
+        title="Visit Detail"
+        sub={`Không tìm thấy lượt khám #${visitId}.`}
+      >
+        <Notice type="error">{notice}</Notice>
+      </Page>
+    );
   }
 
+  const infoRows = [
+    {
+      label: "Mã lượt khám",
+      value: visit.visitCode || "-",
+    },
+    {
+      label: "Bệnh nhi",
+      value:
+        visit.patientName ||
+        visit.patient?.fullName ||
+        "-",
+    },
+    {
+      label: "Lý do khám",
+      value: visit.chiefComplaint || "-",
+    },
+    {
+      label: "Clinic",
+      value: visit.clinicName || "-",
+    },
+  ];
+
+  const columns = [
+    {
+      key: "label",
+      label: "Thông tin",
+      render: (row) => <b>{row.label}</b>,
+    },
+    {
+      key: "value",
+      label: "Giá trị",
+      render: (row) => row.value,
+    },
+  ];
+
   return (
-    <div>
-      <h1 className="dd-page-title">{visit.visitCode}</h1>
-      <p className="dd-page-subtitle">
-        Chi ti?t lu?t kh�m v� tr?ng th�i workflow
-      </p>
+    <Page
+      title={visit.visitCode || "Visit Detail"}
+      sub="Chi tiết lượt khám và trạng thái workflow."
+      actions={
+        <StatusBadge>
+          {visit.status || "CREATED"}
+        </StatusBadge>
+      }
+    >
+      <Notice>{notice}</Notice>
 
-      <div className="dd-stat-grid" style={{ marginBottom: 24 }}>
-        <div className="dd-stat-card">
-          <div className="dd-stat-label">Tr?ng th�i</div>
-          <div style={{ marginTop: 14 }}>
-            <span className="dd-badge dd-badge-blue">
-              {visit.status}
-            </span>
-          </div>
-        </div>
+      <div className="grid cards">
+        <Card>
+          <span className="metricLabel">
+            Trạng thái
+          </span>
 
-        <div className="dd-stat-card">
-          <div className="dd-stat-label">Lo?i kh�m</div>
-          <div className="dd-stat-value" style={{ fontSize: 22 }}>
+          <strong className="metric">
+            {visit.status || "-"}
+          </strong>
+        </Card>
+
+        <Card>
+          <span className="metricLabel">
+            Loại khám
+          </span>
+
+          <strong className="metric">
             {visit.visitType || "-"}
-          </div>
-        </div>
+          </strong>
+        </Card>
 
-        <div className="dd-stat-card">
-          <div className="dd-stat-label">Ng�y kh�m</div>
-          <div className="dd-stat-value" style={{ fontSize: 18 }}>
+        <Card>
+          <span className="metricLabel">
+            Ngày khám
+          </span>
+
+          <strong className="metric">
             {visit.visitDate || "-"}
-          </div>
-        </div>
+          </strong>
+        </Card>
 
-        <div className="dd-stat-card">
-          <div className="dd-stat-label">B�c si ph? tr�ch</div>
-          <div className="dd-stat-value" style={{ fontSize: 18 }}>
+        <Card>
+          <span className="metricLabel">
+            Bác sĩ phụ trách
+          </span>
+
+          <strong
+            className="metric"
+            style={{ fontSize: 22 }}
+          >
             {visit.assignedDoctorName || "-"}
-          </div>
-        </div>
+          </strong>
+        </Card>
       </div>
 
-      <div className="dd-card">
-        <h2 style={{ marginTop: 0, color: "var(--dd-primary-dark)" }}>
-          Th�ng tin lu?t kh�m
-        </h2>
-
-        <table className="dd-table">
-          <tbody>
-            <tr>
-              <th>M� lu?t kh�m</th>
-              <td>{visit.visitCode}</td>
-            </tr>
-            <tr>
-              <th>B?nh nhi</th>
-              <td>{visit.patientName || visit.patient?.fullName || "-"}</td>
-            </tr>
-            <tr>
-              <th>L� do kh�m</th>
-              <td>{visit.chiefComplaint || "-"}</td>
-            </tr>
-            <tr>
-              <th>Clinic</th>
-              <td>{visit.clinicName || "-"}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
+      <Card title="Thông tin lượt khám">
+        <Table
+          rows={infoRows}
+          columns={columns}
+          empty="Chưa có dữ liệu lượt khám."
+        />
+      </Card>
+    </Page>
   );
 }

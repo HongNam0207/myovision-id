@@ -1,6 +1,15 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { intakeApi } from "../../api/intake.api";
+import {
+  Page,
+  Card,
+  Field,
+  TextArea,
+  Button,
+  Notice,
+  StatusBadge,
+} from "../../components/ui/AppUI";
 
 export default function ClinicalIntake() {
   const { visitId } = useParams();
@@ -61,7 +70,7 @@ export default function ClinicalIntake() {
         });
       }
     } catch {
-      console.log("Chua c� intake cho visit n�y.");
+      setMessage("Chưa có dữ liệu tiếp nhận cho lượt khám này.");
     } finally {
       setLoading(false);
     }
@@ -83,117 +92,204 @@ export default function ClinicalIntake() {
     try {
       if (intakeId) {
         await intakeApi.update(intakeId, form);
-        setMessage("�� c?p nh?t clinical intake.");
+        setMessage("Đã cập nhật thông tin tiếp nhận.");
       } else {
         const res = await intakeApi.create(visitId, form);
         const data = res.data?.data || res.data;
         setIntakeId(data.intakeId);
-        setMessage("�� t?o clinical intake.");
+        setMessage("Đã tạo thông tin tiếp nhận.");
       }
     } catch (error) {
       console.error(error);
-      setMessage("Luu th?t b?i. Ki?m tra l?i API ho?c d? li?u nh?p.");
+      setMessage("Lưu thất bại. Vui lòng kiểm tra API hoặc dữ liệu nhập.");
     } finally {
       setSaving(false);
     }
   }
 
   if (loading) {
-    return <div className="dd-card">�ang t?i clinical intake...</div>;
+    return (
+      <Page
+        title="Clinical Intake"
+        sub={`Đang tải dữ liệu tiếp nhận cho lượt khám #${visitId}.`}
+      >
+        <Notice>Đang tải clinical intake...</Notice>
+      </Page>
+    );
   }
 
   return (
-    <div>
-      <h1 className="dd-page-title">Clinical Intake</h1>
-      <p className="dd-page-subtitle">
-        Nh?p th�ng tin ti?p nh?n ban d?u cho lu?t kh�m #{visitId}
-      </p>
+    <Page
+      title="Clinical Intake"
+      sub={`Nhập thông tin tiếp nhận ban đầu cho lượt khám #${visitId}.`}
+      actions={
+        <StatusBadge>
+          {intakeId ? "Đã có intake" : "Chưa có intake"}
+        </StatusBadge>
+      }
+    >
+      <Notice
+        type={
+          message.includes("thất bại")
+            ? "error"
+            : message.includes("Đã")
+            ? "ok"
+            : "info"
+        }
+      >
+        {message}
+      </Notice>
 
-      {message && (
-        <div className="dd-card" style={{ marginBottom: 18, color: "var(--dd-primary-dark)", fontWeight: 800 }}>
-          {message}
-        </div>
-      )}
+      <form onSubmit={handleSubmit}>
+        <Card title="Chỉ số cơ bản">
+          <div className="form">
+            <Field
+              label="Chiều cao (cm)"
+              value={form.heightCm}
+              onChange={(v) => updateField("heightCm", v)}
+            />
 
-      <form onSubmit={handleSubmit} className="dd-card">
-        <h2 style={{ marginTop: 0, color: "var(--dd-primary-dark)" }}>
-          Ch? s? co b?n
-        </h2>
+            <Field
+              label="Cân nặng (kg)"
+              value={form.weightKg}
+              onChange={(v) => updateField("weightKg", v)}
+            />
 
-        <div className="dd-form-grid">
-          <Field label="Chi?u cao cm" value={form.heightCm} onChange={(v) => updateField("heightCm", v)} />
-          <Field label="C�n n?ng kg" value={form.weightKg} onChange={(v) => updateField("weightKg", v)} />
-          <Field label="Huy?t �p" value={form.bloodPressure} onChange={(v) => updateField("bloodPressure", v)} />
-          <Field label="Tu?i ph�t hi?n c?n" value={form.ageMyopiaDetected} onChange={(v) => updateField("ageMyopiaDetected", v)} />
-        </div>
+            <Field
+              label="Huyết áp"
+              value={form.bloodPressure}
+              onChange={(v) => updateField("bloodPressure", v)}
+            />
 
-        <h2 style={{ color: "var(--dd-primary-dark)" }}>
-          B?nh s? & l� do kh�m
-        </h2>
+            <Field
+              label="Tuổi phát hiện cận thị"
+              value={form.ageMyopiaDetected}
+              onChange={(v) => updateField("ageMyopiaDetected", v)}
+            />
+          </div>
+        </Card>
 
-        <div className="dd-form-grid">
-          <Field label="L� do kh�m" value={form.reasonForVisit} onChange={(v) => updateField("reasonForVisit", v)} />
-          <Field label="�? k�nh hi?n t?i" value={form.currentGlassesPower} onChange={(v) => updateField("currentGlassesPower", v)} />
-          <Field label="�i?u tr? tru?c d�y" value={form.previousTreatment} onChange={(v) => updateField("previousTreatment", v)} />
-          <Field label="D? ?ng" value={form.allergyHistory} onChange={(v) => updateField("allergyHistory", v)} />
-        </div>
+        <Card title="Bệnh sử và lý do khám">
+          <div className="form">
+            <Field
+              label="Lý do khám"
+              value={form.reasonForVisit}
+              onChange={(v) => updateField("reasonForVisit", v)}
+            />
 
-        <h2 style={{ color: "var(--dd-primary-dark)" }}>
-          Ti?n s? gia d�nh
-        </h2>
+            <Field
+              label="Độ kính hiện tại"
+              value={form.currentGlassesPower}
+              onChange={(v) => updateField("currentGlassesPower", v)}
+            />
 
-        <div style={{ display: "flex", gap: 18, marginBottom: 18 }}>
-          <Check label="B? c?n th?" checked={form.fatherHasMyopia} onChange={(v) => updateField("fatherHasMyopia", v)} />
-          <Check label="M? c?n th?" checked={form.motherHasMyopia} onChange={(v) => updateField("motherHasMyopia", v)} />
-          <Check label="Anh/ch?/em c?n th?" checked={form.siblingHasMyopia} onChange={(v) => updateField("siblingHasMyopia", v)} />
-        </div>
+            <Field
+              label="Điều trị trước đây"
+              value={form.previousTreatment}
+              onChange={(v) => updateField("previousTreatment", v)}
+            />
 
-        <Field label="Ghi ch� ti?n s? gia d�nh" value={form.familyHistoryNote} onChange={(v) => updateField("familyHistoryNote", v)} />
+            <Field
+              label="Dị ứng"
+              value={form.allergyHistory}
+              onChange={(v) => updateField("allergyHistory", v)}
+            />
+          </div>
+        </Card>
 
-        <h2 style={{ color: "var(--dd-primary-dark)" }}>
-          Th�i quen sinh ho?t
-        </h2>
+        <Card title="Tiền sử gia đình">
+          <div className="actions" style={{ marginBottom: 16 }}>
+            <Check
+              label="Bố cận thị"
+              checked={form.fatherHasMyopia}
+              onChange={(v) => updateField("fatherHasMyopia", v)}
+            />
 
-        <div className="dd-form-grid">
-          <Field label="Gi? nh�n g?n/ng�y" value={form.nearWorkHoursPerDay} onChange={(v) => updateField("nearWorkHoursPerDay", v)} />
-          <Field label="Gi? ngo�i tr?i/ng�y" value={form.outdoorHoursPerDay} onChange={(v) => updateField("outdoorHoursPerDay", v)} />
-          <Field label="Gi? m�n h�nh/ng�y" value={form.screenTimeHoursPerDay} onChange={(v) => updateField("screenTimeHoursPerDay", v)} />
-          <Field label="Kho?ng c�ch d?c cm" value={form.readingDistanceCm} onChange={(v) => updateField("readingDistanceCm", v)} />
-        </div>
+            <Check
+              label="Mẹ cận thị"
+              checked={form.motherHasMyopia}
+              onChange={(v) => updateField("motherHasMyopia", v)}
+            />
 
-        <h2 style={{ color: "var(--dd-primary-dark)" }}>
-          B?nh s? kh�c
-        </h2>
+            <Check
+              label="Anh/chị/em cận thị"
+              checked={form.siblingHasMyopia}
+              onChange={(v) => updateField("siblingHasMyopia", v)}
+            />
+          </div>
 
-        <div className="dd-form-grid">
-          <Field label="B?nh to�n th�n" value={form.systemicDiseaseHistory} onChange={(v) => updateField("systemicDiseaseHistory", v)} />
-          <Field label="B?nh m?t" value={form.eyeDiseaseHistory} onChange={(v) => updateField("eyeDiseaseHistory", v)} />
-        </div>
+          <TextArea
+            label="Ghi chú tiền sử gia đình"
+            value={form.familyHistoryNote}
+            onChange={(v) => updateField("familyHistoryNote", v)}
+          />
+        </Card>
 
-        <button className="dd-btn dd-btn-primary" disabled={saving} style={{ marginTop: 22 }}>
-          {saving ? "�ang luu..." : "Luu Clinical Intake"}
-        </button>
+        <Card title="Thói quen sinh hoạt">
+          <div className="form">
+            <Field
+              label="Giờ nhìn gần/ngày"
+              value={form.nearWorkHoursPerDay}
+              onChange={(v) => updateField("nearWorkHoursPerDay", v)}
+            />
+
+            <Field
+              label="Giờ ngoài trời/ngày"
+              value={form.outdoorHoursPerDay}
+              onChange={(v) => updateField("outdoorHoursPerDay", v)}
+            />
+
+            <Field
+              label="Giờ màn hình/ngày"
+              value={form.screenTimeHoursPerDay}
+              onChange={(v) => updateField("screenTimeHoursPerDay", v)}
+            />
+
+            <Field
+              label="Khoảng cách đọc (cm)"
+              value={form.readingDistanceCm}
+              onChange={(v) => updateField("readingDistanceCm", v)}
+            />
+          </div>
+        </Card>
+
+        <Card title="Bệnh sử khác">
+          <div className="form">
+            <TextArea
+              label="Bệnh toàn thân"
+              value={form.systemicDiseaseHistory}
+              onChange={(v) => updateField("systemicDiseaseHistory", v)}
+            />
+
+            <TextArea
+              label="Bệnh mắt"
+              value={form.eyeDiseaseHistory}
+              onChange={(v) => updateField("eyeDiseaseHistory", v)}
+            />
+          </div>
+
+          <div className="actions" style={{ marginTop: 20 }}>
+            <Button type="submit" disabled={saving}>
+              {saving ? "Đang lưu..." : "Lưu Clinical Intake"}
+            </Button>
+          </div>
+        </Card>
       </form>
-    </div>
-  );
-}
-
-function Field({ label, value, onChange }) {
-  return (
-    <label>
-      <div style={{ fontWeight: 800, marginBottom: 8 }}>{label}</div>
-      <input
-        className="dd-input"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-      />
-    </label>
+    </Page>
   );
 }
 
 function Check({ label, checked, onChange }) {
   return (
-    <label style={{ display: "flex", alignItems: "center", gap: 8, fontWeight: 800 }}>
+    <label
+      className="pill"
+      style={{
+        cursor: "pointer",
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 8,
+      }}
+    >
       <input
         type="checkbox"
         checked={checked}

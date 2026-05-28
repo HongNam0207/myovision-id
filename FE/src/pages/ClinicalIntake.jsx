@@ -2,6 +2,16 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { intakeApi } from "../api/intake.api";
 
+import {
+  Page,
+  Card,
+  Field,
+  TextArea,
+  Button,
+  Notice,
+  StatusBadge,
+} from "../components/ui/AppUI";
+
 const initialForm = {
   heightCm: "",
   weightKg: "",
@@ -24,16 +34,26 @@ const initialForm = {
 
 export default function ClinicalIntake() {
   const { visitId } = useParams();
+
   const [form, setForm] = useState(initialForm);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState("Đang tải dữ liệu tiếp nhận...");
 
   useEffect(() => {
-    intakeApi.getByVisitId(visitId)
+    intakeApi
+      .getByVisitId(visitId)
       .then((res) => {
         const data = res.data?.data || res.data;
-        if (data) setForm({ ...initialForm, ...data });
+
+        if (data) {
+          setForm({ ...initialForm, ...data });
+          setMessage("");
+        } else {
+          setMessage("Chưa có dữ liệu tiếp nhận cho lượt khám này.");
+        }
       })
-      .catch(() => {});
+      .catch(() => {
+        setMessage("Chưa có dữ liệu tiếp nhận cho lượt khám này.");
+      });
   }, [visitId]);
 
   function setValue(name, value) {
@@ -57,64 +77,184 @@ export default function ClinicalIntake() {
 
     try {
       await intakeApi.create(visitId, payload);
-      setMessage("Saved clinical intake successfully.");
+      setMessage("Đã lưu thông tin tiếp nhận.");
     } catch {
-      setMessage("Save failed. Check API or workflow status.");
+      setMessage("Lưu thất bại. Vui lòng kiểm tra API hoặc trạng thái workflow.");
     }
   }
 
   return (
-    <div>
-      <h1 style={titleStyle}>Clinical Intake</h1>
-      <p style={descStyle}>Nurse intake information for visit #{visitId}.</p>
+    <Page
+      title="Clinical Intake"
+      sub={`Điều dưỡng nhập thông tin tiếp nhận cho lượt khám #${visitId}.`}
+      actions={<StatusBadge>NURSE</StatusBadge>}
+    >
+      <Notice
+        type={
+          message.includes("thất bại")
+            ? "error"
+            : message.includes("Đã")
+            ? "ok"
+            : "info"
+        }
+      >
+        {message}
+      </Notice>
 
-      {message && <div style={alertStyle}>{message}</div>}
+      <form onSubmit={handleSubmit}>
+        <Card title="Chỉ số cơ bản">
+          <div className="form">
+            <Field
+              label="Chiều cao (cm)"
+              value={form.heightCm}
+              onChange={(v) => setValue("heightCm", v)}
+            />
 
-      <form onSubmit={handleSubmit} style={formStyle}>
-        <Field label="Height (cm)" value={form.heightCm} onChange={(v) => setValue("heightCm", v)} />
-        <Field label="Weight (kg)" value={form.weightKg} onChange={(v) => setValue("weightKg", v)} />
-        <Field label="Blood Pressure" value={form.bloodPressure} onChange={(v) => setValue("bloodPressure", v)} />
-        <Field label="Reason For Visit" value={form.reasonForVisit} onChange={(v) => setValue("reasonForVisit", v)} />
-        <Field label="Age Myopia Detected" value={form.ageMyopiaDetected} onChange={(v) => setValue("ageMyopiaDetected", v)} />
-        <Field label="Current Glasses Power" value={form.currentGlassesPower} onChange={(v) => setValue("currentGlassesPower", v)} />
-        <Field label="Previous Treatment" value={form.previousTreatment} onChange={(v) => setValue("previousTreatment", v)} />
-        <Field label="Near Work Hours/Day" value={form.nearWorkHoursPerDay} onChange={(v) => setValue("nearWorkHoursPerDay", v)} />
-        <Field label="Outdoor Hours/Day" value={form.outdoorHoursPerDay} onChange={(v) => setValue("outdoorHoursPerDay", v)} />
-        <Field label="Screen Time Hours/Day" value={form.screenTimeHoursPerDay} onChange={(v) => setValue("screenTimeHoursPerDay", v)} />
-        <Field label="Reading Distance (cm)" value={form.readingDistanceCm} onChange={(v) => setValue("readingDistanceCm", v)} />
-        <Field label="Allergy History" value={form.allergyHistory} onChange={(v) => setValue("allergyHistory", v)} />
-        <Field label="Systemic Disease History" value={form.systemicDiseaseHistory} onChange={(v) => setValue("systemicDiseaseHistory", v)} />
-        <Field label="Eye Disease History" value={form.eyeDiseaseHistory} onChange={(v) => setValue("eyeDiseaseHistory", v)} />
+            <Field
+              label="Cân nặng (kg)"
+              value={form.weightKg}
+              onChange={(v) => setValue("weightKg", v)}
+            />
 
-        <div style={{ gridColumn: "1 / -1", display: "flex", gap: 16, flexWrap: "wrap" }}>
-          <Check label="Father Has Myopia" checked={form.fatherHasMyopia} onChange={(v) => setValue("fatherHasMyopia", v)} />
-          <Check label="Mother Has Myopia" checked={form.motherHasMyopia} onChange={(v) => setValue("motherHasMyopia", v)} />
-          <Check label="Sibling Has Myopia" checked={form.siblingHasMyopia} onChange={(v) => setValue("siblingHasMyopia", v)} />
-        </div>
+            <Field
+              label="Huyết áp"
+              value={form.bloodPressure}
+              onChange={(v) => setValue("bloodPressure", v)}
+            />
 
-        <button style={buttonStyle}>Save Intake</button>
+            <Field
+              label="Tuổi phát hiện cận thị"
+              value={form.ageMyopiaDetected}
+              onChange={(v) => setValue("ageMyopiaDetected", v)}
+            />
+          </div>
+        </Card>
+
+        <Card title="Bệnh sử và lý do khám">
+          <div className="form">
+            <Field
+              label="Lý do khám"
+              value={form.reasonForVisit}
+              onChange={(v) => setValue("reasonForVisit", v)}
+            />
+
+            <Field
+              label="Độ kính hiện tại"
+              value={form.currentGlassesPower}
+              onChange={(v) => setValue("currentGlassesPower", v)}
+            />
+
+            <Field
+              label="Điều trị trước đây"
+              value={form.previousTreatment}
+              onChange={(v) => setValue("previousTreatment", v)}
+            />
+
+            <Field
+              label="Dị ứng"
+              value={form.allergyHistory}
+              onChange={(v) => setValue("allergyHistory", v)}
+            />
+          </div>
+        </Card>
+
+        <Card title="Tiền sử gia đình">
+          <div className="actions" style={{ marginBottom: 16 }}>
+            <Check
+              label="Bố cận thị"
+              checked={form.fatherHasMyopia}
+              onChange={(v) => setValue("fatherHasMyopia", v)}
+            />
+
+            <Check
+              label="Mẹ cận thị"
+              checked={form.motherHasMyopia}
+              onChange={(v) => setValue("motherHasMyopia", v)}
+            />
+
+            <Check
+              label="Anh/chị/em cận thị"
+              checked={form.siblingHasMyopia}
+              onChange={(v) => setValue("siblingHasMyopia", v)}
+            />
+          </div>
+        </Card>
+
+        <Card title="Thói quen sinh hoạt">
+          <div className="form">
+            <Field
+              label="Giờ nhìn gần/ngày"
+              value={form.nearWorkHoursPerDay}
+              onChange={(v) => setValue("nearWorkHoursPerDay", v)}
+            />
+
+            <Field
+              label="Giờ ngoài trời/ngày"
+              value={form.outdoorHoursPerDay}
+              onChange={(v) => setValue("outdoorHoursPerDay", v)}
+            />
+
+            <Field
+              label="Giờ màn hình/ngày"
+              value={form.screenTimeHoursPerDay}
+              onChange={(v) => setValue("screenTimeHoursPerDay", v)}
+            />
+
+            <Field
+              label="Khoảng cách đọc (cm)"
+              value={form.readingDistanceCm}
+              onChange={(v) => setValue("readingDistanceCm", v)}
+            />
+          </div>
+        </Card>
+
+        <Card title="Bệnh sử khác">
+          <div className="form">
+            <TextArea
+              label="Bệnh toàn thân"
+              value={form.systemicDiseaseHistory}
+              onChange={(v) => setValue("systemicDiseaseHistory", v)}
+            />
+
+            <TextArea
+              label="Bệnh mắt"
+              value={form.eyeDiseaseHistory}
+              onChange={(v) => setValue("eyeDiseaseHistory", v)}
+            />
+          </div>
+
+          <div className="actions" style={{ marginTop: 20 }}>
+            <Button type="submit">Lưu Intake</Button>
+
+            <Button
+              variant="ghost"
+              onClick={() => setForm(initialForm)}
+            >
+              Làm mới form
+            </Button>
+          </div>
+        </Card>
       </form>
-    </div>
-  );
-}
-
-function Field({ label, value, onChange }) {
-  return (
-    <label style={{ display: "grid", gap: 8 }}>
-      <span style={{ fontWeight: 700 }}>{label}</span>
-      <input
-        value={value ?? ""}
-        onChange={(e) => onChange(e.target.value)}
-        style={inputStyle}
-      />
-    </label>
+    </Page>
   );
 }
 
 function Check({ label, checked, onChange }) {
   return (
-    <label style={{ display: "flex", gap: 8, alignItems: "center", fontWeight: 700 }}>
-      <input type="checkbox" checked={!!checked} onChange={(e) => onChange(e.target.checked)} />
+    <label
+      className="pill"
+      style={{
+        cursor: "pointer",
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 8,
+      }}
+    >
+      <input
+        type="checkbox"
+        checked={!!checked}
+        onChange={(e) => onChange(e.target.checked)}
+      />
       {label}
     </label>
   );
@@ -124,34 +264,3 @@ function toNumber(value) {
   if (value === "" || value === null || value === undefined) return null;
   return Number(value);
 }
-
-const titleStyle = { fontSize: 36, fontWeight: "bold", margin: 0 };
-const descStyle = { marginTop: 8, color: "#64748b" };
-const formStyle = {
-  marginTop: 24,
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-  gap: 16,
-};
-const inputStyle = {
-  border: "1px solid #cbd5e1",
-  borderRadius: 10,
-  padding: "10px 12px",
-};
-const buttonStyle = {
-  gridColumn: "1 / -1",
-  background: "#2563eb",
-  color: "white",
-  border: "none",
-  borderRadius: 12,
-  padding: "12px 18px",
-  fontWeight: 700,
-};
-const alertStyle = {
-  marginTop: 16,
-  padding: 14,
-  borderRadius: 12,
-  background: "#eff6ff",
-  color: "#1d4ed8",
-  fontWeight: 700,
-};

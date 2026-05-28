@@ -6,10 +6,21 @@ import {
   updateBinocularVisionApi,
 } from "../api/measurement.api";
 
+import {
+  Page,
+  Card,
+  Field,
+  TextArea,
+  Button,
+  Notice,
+  StatusBadge,
+} from "../components/ui/AppUI";
+
 export default function BinocularVision() {
   const { visitId } = useParams();
+
   const [binocularId, setBinocularId] = useState(null);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState("Đang tải dữ liệu thị giác hai mắt...");
 
   const [form, setForm] = useState({
     aaOd: "",
@@ -32,14 +43,16 @@ export default function BinocularVision() {
   async function loadBinocular() {
     try {
       const res = await getBinocularVisionApi(visitId);
-      const data = res.data ?? res;
+      const raw = res.data?.data || res.data || res;
 
-      if (data) {
-        setBinocularId(data.binocularId || data.id || null);
-        setForm((prev) => ({ ...prev, ...data }));
+      if (raw) {
+        setBinocularId(raw.binocularId || raw.id || null);
+        setForm((prev) => ({ ...prev, ...raw }));
+        setMessage("");
       }
     } catch {
       setBinocularId(null);
+      setMessage("Chưa có dữ liệu thị giác hai mắt cho lượt khám này.");
     }
   }
 
@@ -66,78 +79,151 @@ export default function BinocularVision() {
     try {
       if (binocularId) {
         await updateBinocularVisionApi(binocularId, payload);
+        setMessage("Đã cập nhật dữ liệu thị giác hai mắt.");
       } else {
         await createBinocularVisionApi(visitId, payload);
+        setMessage("Đã tạo dữ liệu thị giác hai mắt.");
       }
 
-      setMessage("Saved successfully");
       await loadBinocular();
     } catch (error) {
       console.error(error);
-      setMessage(error.response?.data?.message || "Save failed");
+      setMessage(error.response?.data?.message || "Lưu dữ liệu thất bại.");
     }
   }
 
   return (
-    <div className="min-h-screen bg-slate-100 p-6">
-      <div className="mb-6">
-        <Link to={`/visits/${visitId}`} className="text-blue-600">
-          Back to visit
-        </Link>
-        <h1 className="mt-3 text-3xl font-bold">Binocular Vision</h1>
-        <p className="text-slate-500">Visit ID: {visitId}</p>
-      </div>
+    <Page
+      title="Binocular Vision"
+      sub={`Nhập dữ liệu thị giác hai mắt cho lượt khám #${visitId}.`}
+      actions={
+        <>
+          <Link className="btn ghost" to={`/visits/${visitId}`}>
+            Quay lại Visit
+          </Link>
 
-      <form onSubmit={handleSubmit} className="rounded-2xl bg-white p-6 shadow">
-        <div className="grid gap-4 md:grid-cols-2">
-          <Input label="AA OD" value={form.aaOd} onChange={(v) => updateField("aaOd", v)} />
-          <Input label="AA OS" value={form.aaOs} onChange={(v) => updateField("aaOs", v)} />
-          <Input label="MEM OD" value={form.memOd} onChange={(v) => updateField("memOd", v)} />
-          <Input label="MEM OS" value={form.memOs} onChange={(v) => updateField("memOs", v)} />
-          <Input label="Facility OD" value={form.facilityOd} onChange={(v) => updateField("facilityOd", v)} />
-          <Input label="Facility OS" value={form.facilityOs} onChange={(v) => updateField("facilityOs", v)} />
-          <Input label="Cover test distance" value={form.coverTestDistance} onChange={(v) => updateField("coverTestDistance", v)} />
-          <Input label="Cover test near" value={form.coverTestNear} onChange={(v) => updateField("coverTestNear", v)} />
-          <Input label="AC/A ratio" value={form.acARatio} onChange={(v) => updateField("acARatio", v)} />
-          <Input label="NPC cm" value={form.npcCm} onChange={(v) => updateField("npcCm", v)} />
-        </div>
+          <StatusBadge>
+            {binocularId ? "Đã có dữ liệu" : "Chưa có dữ liệu"}
+          </StatusBadge>
+        </>
+      }
+    >
+      <Notice
+        type={
+          message.includes("thất bại")
+            ? "error"
+            : message.includes("Đã")
+            ? "ok"
+            : "info"
+        }
+      >
+        {message}
+      </Notice>
 
-        <div className="mt-4">
-          <Textarea label="Note" value={form.note} onChange={(v) => updateField("note", v)} />
-        </div>
+      <form onSubmit={handleSubmit}>
+        <Card title="Điều tiết và đáp ứng điều tiết">
+          <div className="form">
+            <Field
+              label="AA OD"
+              value={form.aaOd}
+              onChange={(v) => updateField("aaOd", v)}
+            />
 
-        {message && <p className="mt-5 rounded-xl bg-slate-100 p-3">{message}</p>}
+            <Field
+              label="AA OS"
+              value={form.aaOs}
+              onChange={(v) => updateField("aaOs", v)}
+            />
 
-        <button className="mt-6 rounded-xl bg-blue-600 px-5 py-3 font-semibold text-white">
-          Save Binocular Vision
-        </button>
+            <Field
+              label="MEM OD"
+              value={form.memOd}
+              onChange={(v) => updateField("memOd", v)}
+            />
+
+            <Field
+              label="MEM OS"
+              value={form.memOs}
+              onChange={(v) => updateField("memOs", v)}
+            />
+
+            <Field
+              label="Facility OD"
+              value={form.facilityOd}
+              onChange={(v) => updateField("facilityOd", v)}
+            />
+
+            <Field
+              label="Facility OS"
+              value={form.facilityOs}
+              onChange={(v) => updateField("facilityOs", v)}
+            />
+          </div>
+        </Card>
+
+        <Card title="Cover Test và hội tụ">
+          <div className="form">
+            <Field
+              label="Cover test distance"
+              value={form.coverTestDistance}
+              onChange={(v) => updateField("coverTestDistance", v)}
+            />
+
+            <Field
+              label="Cover test near"
+              value={form.coverTestNear}
+              onChange={(v) => updateField("coverTestNear", v)}
+            />
+
+            <Field
+              label="AC/A ratio"
+              value={form.acARatio}
+              onChange={(v) => updateField("acARatio", v)}
+            />
+
+            <Field
+              label="NPC cm"
+              value={form.npcCm}
+              onChange={(v) => updateField("npcCm", v)}
+            />
+          </div>
+        </Card>
+
+        <Card title="Ghi chú chuyên môn">
+          <TextArea
+            label="Ghi chú"
+            value={form.note}
+            onChange={(v) => updateField("note", v)}
+          />
+
+          <div className="actions" style={{ marginTop: 20 }}>
+            <Button type="submit">
+              Lưu Binocular Vision
+            </Button>
+
+            <Button
+              variant="ghost"
+              onClick={() =>
+                setForm({
+                  aaOd: "",
+                  aaOs: "",
+                  memOd: "",
+                  memOs: "",
+                  facilityOd: "",
+                  facilityOs: "",
+                  coverTestDistance: "",
+                  coverTestNear: "",
+                  acARatio: "",
+                  npcCm: "",
+                  note: "",
+                })
+              }
+            >
+              Làm mới form
+            </Button>
+          </div>
+        </Card>
       </form>
-    </div>
-  );
-}
-
-function Input({ label, value, onChange }) {
-  return (
-    <label className="block">
-      <span className="text-sm font-medium text-slate-700">{label}</span>
-      <input
-        value={value ?? ""}
-        onChange={(e) => onChange(e.target.value)}
-        className="mt-1 w-full rounded-xl border px-4 py-3 outline-none focus:border-blue-500"
-      />
-    </label>
-  );
-}
-
-function Textarea({ label, value, onChange }) {
-  return (
-    <label className="block">
-      <span className="text-sm font-medium text-slate-700">{label}</span>
-      <textarea
-        value={value ?? ""}
-        onChange={(e) => onChange(e.target.value)}
-        className="mt-1 min-h-32 w-full rounded-xl border px-4 py-3 outline-none focus:border-blue-500"
-      />
-    </label>
+    </Page>
   );
 }

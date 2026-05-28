@@ -6,10 +6,19 @@ import {
   updateReportVisibilityApi,
 } from "../api/reports.api";
 
+import {
+  Page,
+  Card,
+  Button,
+  Notice,
+  StatusBadge,
+} from "../components/ui/AppUI";
+
 export default function MedicalReport() {
   const { visitId } = useParams();
+
   const [reports, setReports] = useState([]);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState("Đang tải danh sách báo cáo...");
 
   useEffect(() => {
     loadReports();
@@ -18,14 +27,21 @@ export default function MedicalReport() {
   async function loadReports() {
     try {
       const res = await getVisitReportsApi(visitId);
-      const data = res.data ?? res;
+      const raw = res.data?.data || res.data || res;
 
-      if (Array.isArray(data)) setReports(data);
-      else if (Array.isArray(data.items)) setReports(data.items);
-      else setReports([]);
+      if (Array.isArray(raw)) {
+        setReports(raw);
+      } else if (Array.isArray(raw.items)) {
+        setReports(raw.items);
+      } else {
+        setReports([]);
+      }
+
+      setMessage("");
     } catch (error) {
       console.error(error);
       setReports([]);
+      setMessage("Không tải được dữ liệu báo cáo.");
     }
   }
 
@@ -34,11 +50,11 @@ export default function MedicalReport() {
 
     try {
       await generateVisitReportApi(visitId);
-      setMessage("Report generated successfully");
+      setMessage("Đã tạo báo cáo khám.");
       await loadReports();
     } catch (error) {
       console.error(error);
-      setMessage(error.response?.data?.message || "Generate failed");
+      setMessage(error.response?.data?.message || "Tạo báo cáo thất bại.");
     }
   }
 
@@ -48,90 +64,125 @@ export default function MedicalReport() {
 
     try {
       await updateReportVisibilityApi(id, next);
+      setMessage("Đã cập nhật trạng thái hiển thị báo cáo.");
       await loadReports();
     } catch (error) {
       console.error(error);
-      setMessage(error.response?.data?.message || "Update visibility failed");
+      setMessage(
+        error.response?.data?.message || "Cập nhật hiển thị báo cáo thất bại."
+      );
     }
   }
 
   return (
-    <div className="min-h-screen bg-slate-100 p-6">
-      <div className="mb-6 flex items-center justify-between">
-        <div>
-          <Link to={`/visits/${visitId}`} className="text-blue-600">
-            Back to visit
+    <Page
+      title="Medical Reports"
+      sub={`Quản lý báo cáo khám và quyền hiển thị cho phụ huynh của lượt khám #${visitId}.`}
+      actions={
+        <>
+          <Link className="btn ghost" to={`/visits/${visitId}`}>
+            Quay lại Visit
           </Link>
-          <h1 className="mt-3 text-3xl font-bold">Medical Reports</h1>
-          <p className="text-slate-500">Visit ID: {visitId}</p>
-        </div>
 
-        <button
-          onClick={generateReport}
-          className="rounded-xl bg-blue-600 px-5 py-3 font-semibold text-white"
-        >
-          Generate Report
-        </button>
+          <Button onClick={generateReport}>
+            Tạo báo cáo
+          </Button>
+        </>
+      }
+    >
+      <Notice
+        type={
+          message.includes("Không") || message.includes("thất bại")
+            ? "error"
+            : message.includes("Đã")
+            ? "ok"
+            : "info"
+        }
+      >
+        {message}
+      </Notice>
+
+      <div className="grid cards">
+        <Card>
+          <span className="metricLabel">Tổng báo cáo</span>
+          <strong className="metric">{reports.length}</strong>
+        </Card>
+
+        <Card>
+          <span className="metricLabel">Hiển thị phụ huynh</span>
+          <strong className="metric">
+            {reports.filter((x) => x.isVisibleToParent).length}
+          </strong>
+        </Card>
+
+        <Card>
+          <span className="metricLabel">Đang ẩn</span>
+          <strong className="metric">
+            {reports.filter((x) => !x.isVisibleToParent).length}
+          </strong>
+        </Card>
       </div>
 
-      {message && <p className="mb-5 rounded-xl bg-white p-3 shadow">{message}</p>}
+      {!reports.length ? (
+        <Card>
+          <div className="empty">Chưa có báo cáo cho lượt khám này.</div>
+        </Card>
+      ) : (
+        reports.map((report) => {
+          const id = report.reportId || report.id;
 
-      <div className="space-y-4">
-        {reports.length === 0 ? (
-          <div className="rounded-2xl bg-white p-6 shadow">No reports</div>
-        ) : (
-          reports.map((report) => {
-            const id = report.reportId || report.id;
+          return (
+            <Card key={id} title={report.reportTitle || "Visit Summary"}>
+              <div className="pageHead" style={{ marginBottom: 14 }}>
+                <div>
+                  <p>
+                    Type: <b>{report.reportType || "-"}</b>
+                  </p>
 
-            return (
-              <div key={id} className="rounded-2xl bg-white p-6 shadow">
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <h2 className="text-xl font-bold">
-                      {report.reportTitle || "Visit Summary"}
-                    </h2>
-                    <p className="mt-2 text-sm text-slate-500">
-                      Type: {report.reportType} | Generated: {report.generatedAt}
-                    </p>
+                  <p>
+                    Generated: <b>{report.generatedAt || "-"}</b>
+                  </p>
+                </div>
 
-                    <div className="mt-4 whitespace-pre-wrap rounded-xl bg-slate-50 p-4 text-sm text-slate-700">
-                      {report.reportContent || "No content preview"}
-                    </div>
-                  </div>
+                <div className="actions">
+                  <StatusBadge>
+                    {report.isVisibleToParent ? "Visible" : "Hidden"}
+                  </StatusBadge>
 
-                  <div className="min-w-40 text-right">
-                    <span className={`rounded-full px-3 py-1 text-xs font-semibold ${
-                      report.isVisibleToParent
-                        ? "bg-green-100 text-green-700"
-                        : "bg-slate-100 text-slate-600"
-                    }`}>
-                      {report.isVisibleToParent ? "Visible" : "Hidden"}
-                    </span>
+                  <Button
+                    variant="ghost"
+                    onClick={() => toggleVisibility(report)}
+                  >
+                    Đổi hiển thị
+                  </Button>
 
-                    <button
-                      onClick={() => toggleVisibility(report)}
-                      className="mt-3 block w-full rounded-lg bg-slate-900 px-3 py-2 text-sm text-white"
+                  {report.pdfUrl && (
+                    <a
+                      href={report.pdfUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="btn"
                     >
-                      Toggle visibility
-                    </button>
-
-                    {report.pdfUrl && (
-                      <a
-                        href={report.pdfUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="mt-3 block rounded-lg bg-blue-600 px-3 py-2 text-center text-sm text-white"
-                      >
-                        Open PDF
-                      </a>
-                    )}
-                  </div>
+                      Mở PDF
+                    </a>
+                  )}
                 </div>
               </div>
-            );
-          })
-        )}
-      </div>
-    </div>
+
+              <div
+                className="notice"
+                style={{
+                  whiteSpace: "pre-wrap",
+                  lineHeight: 1.7,
+                  fontWeight: 500,
+                }}
+              >
+                {report.reportContent || "Chưa có nội dung preview."}
+              </div>
+            </Card>
+          );
+        })
+      )}
+    </Page>
   );
 }

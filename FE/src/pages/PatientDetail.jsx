@@ -2,10 +2,22 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { getPatientDetailApi } from "../api/patients.api";
 
+import {
+  Page,
+  Card,
+  Notice,
+  StatusBadge,
+  Table,
+} from "../components/ui/AppUI";
+
 export default function PatientDetail() {
   const { patientId } = useParams();
+
   const [patient, setPatient] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [message, setMessage] = useState(
+    "Đang tải hồ sơ bệnh nhi..."
+  );
 
   useEffect(() => {
     loadPatient();
@@ -14,53 +26,178 @@ export default function PatientDetail() {
   async function loadPatient() {
     try {
       const res = await getPatientDetailApi(patientId);
-      const data = res.data ?? res;
+
+      const data = res.data?.data || res.data || res;
+
       setPatient(data);
+      setMessage("");
     } catch (error) {
       console.error(error);
       setPatient(null);
+      setMessage("Không tìm thấy hồ sơ bệnh nhi.");
     } finally {
       setLoading(false);
     }
   }
 
   if (loading) {
-    return <div className="min-h-screen bg-slate-100 p-6">Loading...</div>;
+    return (
+      <Page
+        title="Patient Detail"
+        sub={`Đang tải hồ sơ bệnh nhi #${patientId}.`}
+      >
+        <Notice>{message}</Notice>
+      </Page>
+    );
   }
 
   if (!patient) {
-    return <div className="min-h-screen bg-slate-100 p-6">Patient not found</div>;
+    return (
+      <Page
+        title="Patient Detail"
+        sub={`Không tìm thấy hồ sơ bệnh nhi #${patientId}.`}
+      >
+        <Notice type="error">{message}</Notice>
+      </Page>
+    );
   }
 
+  const basicInfo = [
+    {
+      label: "Họ tên",
+      value: patient.fullName || "-",
+    },
+    {
+      label: "Giới tính",
+      value: patient.gender || "-",
+    },
+    {
+      label: "Ngày sinh",
+      value: patient.dateOfBirth || "-",
+    },
+    {
+      label: "Địa chỉ",
+      value: patient.address || "-",
+    },
+    {
+      label: "Trường học",
+      value: patient.schoolName || "-",
+    },
+    {
+      label: "Lớp",
+      value: patient.grade || "-",
+    },
+  ];
+
+  const recordInfo = [
+    {
+      label: "Trạng thái",
+      value: patient.status || "-",
+    },
+    {
+      label: "Clinic ID",
+      value: patient.clinicId || "-",
+    },
+    {
+      label: "Created At",
+      value: patient.createdAt || "-",
+    },
+    {
+      label: "Updated At",
+      value: patient.updatedAt || "-",
+    },
+  ];
+
+  const columns = [
+    {
+      key: "label",
+      label: "Thông tin",
+      render: (row) => <b>{row.label}</b>,
+    },
+    {
+      key: "value",
+      label: "Giá trị",
+      render: (row) => row.value,
+    },
+  ];
+
   return (
-    <div className="min-h-screen bg-slate-100 p-6">
-      <div className="mb-6">
-        <Link to="/patients" className="text-blue-600">
-          Back to patients
-        </Link>
-        <h1 className="mt-3 text-3xl font-bold">{patient.fullName}</h1>
-        <p className="text-slate-500">Patient code: {patient.patientCode}</p>
+    <Page
+      title={patient.fullName || "Patient Detail"}
+      sub={`Patient code: ${patient.patientCode || "-"}`}
+      actions={
+        <>
+          <Link className="btn ghost" to="/patients">
+            Quay lại Patients
+          </Link>
+
+          <StatusBadge>
+            {patient.status || "ACTIVE"}
+          </StatusBadge>
+        </>
+      }
+    >
+      <Notice>{message}</Notice>
+
+      <div className="grid cards">
+        <Card>
+          <span className="metricLabel">
+            Mã bệnh nhi
+          </span>
+
+          <strong className="metric">
+            {patient.patientCode || "-"}
+          </strong>
+        </Card>
+
+        <Card>
+          <span className="metricLabel">
+            Giới tính
+          </span>
+
+          <strong className="metric">
+            {patient.gender || "-"}
+          </strong>
+        </Card>
+
+        <Card>
+          <span className="metricLabel">
+            Ngày sinh
+          </span>
+
+          <strong className="metric">
+            {patient.dateOfBirth || "-"}
+          </strong>
+        </Card>
+
+        <Card>
+          <span className="metricLabel">
+            Trạng thái
+          </span>
+
+          <strong className="metric">
+            {patient.status || "ACTIVE"}
+          </strong>
+        </Card>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
-        <div className="rounded-2xl bg-white p-5 shadow">
-          <h2 className="mb-4 text-lg font-semibold">Basic information</h2>
-          <p><b>Full name:</b> {patient.fullName}</p>
-          <p><b>Gender:</b> {patient.gender}</p>
-          <p><b>Date of birth:</b> {patient.dateOfBirth}</p>
-          <p><b>Address:</b> {patient.address}</p>
-          <p><b>School:</b> {patient.schoolName}</p>
-          <p><b>Grade:</b> {patient.grade}</p>
-        </div>
+      <div className="grid two">
+        <Card title="Thông tin cơ bản">
+          <Table
+            rows={basicInfo}
+            columns={columns}
+            empty="Chưa có dữ liệu."
+          />
+        </Card>
 
-        <div className="rounded-2xl bg-white p-5 shadow">
-          <h2 className="mb-4 text-lg font-semibold">Record status</h2>
-          <p><b>Status:</b> {patient.status}</p>
-          <p><b>Clinic ID:</b> {patient.clinicId}</p>
-          <p><b>Created At:</b> {patient.createdAt}</p>
-          <p><b>Updated At:</b> {patient.updatedAt}</p>
-        </div>
+        <Card title="Thông tin hồ sơ">
+          <Table
+            rows={recordInfo}
+            columns={columns}
+            empty="Chưa có dữ liệu."
+          />
+        </Card>
       </div>
-    </div>
+    </Page>
   );
 }

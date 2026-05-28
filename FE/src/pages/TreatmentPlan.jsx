@@ -2,8 +2,19 @@ import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { createTreatmentPlanApi } from "../api/treatment.api";
 
+import {
+  Page,
+  Card,
+  Field,
+  TextArea,
+  Button,
+  Notice,
+  StatusBadge,
+} from "../components/ui/AppUI";
+
 export default function TreatmentPlan() {
   const { visitId } = useParams();
+
   const [message, setMessage] = useState("");
 
   const [form, setForm] = useState({
@@ -20,6 +31,18 @@ export default function TreatmentPlan() {
     setForm((prev) => ({ ...prev, [name]: value }));
   }
 
+  function resetForm() {
+    setForm({
+      planName: "",
+      treatmentGoal: "",
+      startDate: "",
+      endDate: "",
+      complianceTarget: "",
+      followUpIntervalDays: "",
+      doctorInstruction: "",
+    });
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
     setMessage("");
@@ -32,74 +55,100 @@ export default function TreatmentPlan() {
 
     try {
       await createTreatmentPlanApi(visitId, payload);
-      setMessage("Saved successfully");
+      setMessage("Đã lưu phác đồ điều trị.");
     } catch (error) {
       console.error(error);
-      setMessage(error.response?.data?.message || "Save failed");
+      setMessage(error.response?.data?.message || "Lưu phác đồ thất bại.");
     }
   }
 
   return (
-    <div className="min-h-screen bg-slate-100 p-6">
-      <div className="mb-6">
-        <Link to={`/visits/${visitId}`} className="text-blue-600">
-          Back to visit
-        </Link>
-        <h1 className="mt-3 text-3xl font-bold">Treatment Plan</h1>
-        <p className="text-slate-500">Visit ID: {visitId}</p>
-      </div>
+    <Page
+      title="Treatment Plan"
+      sub={`Bác sĩ lập phác đồ điều trị cho lượt khám #${visitId}.`}
+      actions={
+        <>
+          <Link className="btn ghost" to={`/visits/${visitId}`}>
+            Quay lại Visit
+          </Link>
 
-      <form onSubmit={handleSubmit} className="rounded-2xl bg-white p-6 shadow">
-        <div className="grid gap-4 md:grid-cols-2">
-          <Input label="Plan name" value={form.planName} onChange={(v) => updateField("planName", v)} />
-          <Input label="Treatment goal" value={form.treatmentGoal} onChange={(v) => updateField("treatmentGoal", v)} />
-          <Input label="Start date" type="date" value={form.startDate} onChange={(v) => updateField("startDate", v)} />
-          <Input label="End date" type="date" value={form.endDate} onChange={(v) => updateField("endDate", v)} />
-          <Input label="Compliance target" value={form.complianceTarget} onChange={(v) => updateField("complianceTarget", v)} />
-          <Input label="Follow-up interval days" value={form.followUpIntervalDays} onChange={(v) => updateField("followUpIntervalDays", v)} />
-        </div>
+          <StatusBadge>ACTIVE</StatusBadge>
+        </>
+      }
+    >
+      <Notice
+        type={
+          message.includes("thất bại")
+            ? "error"
+            : message.includes("Đã")
+            ? "ok"
+            : "info"
+        }
+      >
+        {message}
+      </Notice>
 
-        <div className="mt-4">
-          <Textarea
+      <form onSubmit={handleSubmit}>
+        <Card title="Thông tin phác đồ">
+          <div className="form">
+            <Field
+              label="Tên phác đồ"
+              value={form.planName}
+              onChange={(v) => updateField("planName", v)}
+            />
+
+            <Field
+              label="Mục tiêu điều trị"
+              value={form.treatmentGoal}
+              onChange={(v) => updateField("treatmentGoal", v)}
+            />
+
+            <Field
+              label="Ngày bắt đầu"
+              type="date"
+              value={form.startDate}
+              onChange={(v) => updateField("startDate", v)}
+            />
+
+            <Field
+              label="Ngày kết thúc"
+              type="date"
+              value={form.endDate}
+              onChange={(v) => updateField("endDate", v)}
+            />
+
+            <Field
+              label="Mục tiêu tuân thủ"
+              value={form.complianceTarget}
+              onChange={(v) => updateField("complianceTarget", v)}
+            />
+
+            <Field
+              label="Khoảng cách tái khám (ngày)"
+              value={form.followUpIntervalDays}
+              onChange={(v) => updateField("followUpIntervalDays", v)}
+            />
+          </div>
+        </Card>
+
+        <Card title="Hướng dẫn của bác sĩ">
+          <TextArea
             label="Doctor instruction"
             value={form.doctorInstruction}
             onChange={(v) => updateField("doctorInstruction", v)}
           />
-        </div>
 
-        {message && <p className="mt-5 rounded-xl bg-slate-100 p-3">{message}</p>}
+          <div className="actions" style={{ marginTop: 20 }}>
+            <Button type="submit">
+              Lưu Treatment Plan
+            </Button>
 
-        <button className="mt-6 rounded-xl bg-blue-600 px-5 py-3 font-semibold text-white">
-          Save Treatment Plan
-        </button>
+            <Button variant="ghost" onClick={resetForm}>
+              Làm mới form
+            </Button>
+          </div>
+        </Card>
       </form>
-    </div>
-  );
-}
-
-function Input({ label, value, onChange, type = "text" }) {
-  return (
-    <label className="block">
-      <span className="text-sm font-medium text-slate-700">{label}</span>
-      <input
-        type={type}
-        value={value ?? ""}
-        onChange={(e) => onChange(e.target.value)}
-        className="mt-1 w-full rounded-xl border px-4 py-3 outline-none focus:border-blue-500"
-      />
-    </label>
-  );
-}
-
-function Textarea({ label, value, onChange }) {
-  return (
-    <label className="block">
-      <span className="text-sm font-medium text-slate-700">{label}</span>
-      <textarea
-        value={value ?? ""}
-        onChange={(e) => onChange(e.target.value)}
-        className="mt-1 min-h-40 w-full rounded-xl border px-4 py-3 outline-none focus:border-blue-500"
-      />
-    </label>
+    </Page>
   );
 }

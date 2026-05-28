@@ -1,19 +1,30 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { patientApi } from "../../api/patients.api";
+import {
+  Page,
+  Card,
+  Notice,
+  StatusBadge,
+  Table,
+} from "../../components/ui/AppUI";
 
 export default function PatientDetail() {
   const { patientId } = useParams();
   const [patient, setPatient] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [notice, setNotice] = useState("Đang tải hồ sơ bệnh nhi...");
 
   async function loadPatient() {
     try {
       const res = await patientApi.getById(patientId);
       const data = res.data?.data || res.data;
       setPatient(data);
+      setNotice("");
     } catch (error) {
       console.error(error);
+      setPatient(null);
+      setNotice("Không tìm thấy hồ sơ bệnh nhi.");
     } finally {
       setLoading(false);
     }
@@ -24,78 +35,102 @@ export default function PatientDetail() {
   }, [patientId]);
 
   if (loading) {
-    return <div className="dd-card">�ang t?i h? so b?nh nhi...</div>;
+    return (
+      <Page
+        title="Hồ sơ bệnh nhi"
+        sub={`Đang tải dữ liệu bệnh nhi #${patientId}.`}
+      >
+        <Notice>{notice}</Notice>
+      </Page>
+    );
   }
 
   if (!patient) {
-    return <div className="dd-card">Kh�ng t�m th?y b?nh nhi.</div>;
+    return (
+      <Page
+        title="Hồ sơ bệnh nhi"
+        sub={`Không tìm thấy dữ liệu bệnh nhi #${patientId}.`}
+      >
+        <Notice type="error">{notice}</Notice>
+      </Page>
+    );
   }
 
+  const infoRows = [
+    {
+      label: "Họ tên",
+      value: patient.fullName || "-",
+    },
+    {
+      label: "Mã bệnh viện",
+      value: patient.hospitalPatientCode || "-",
+    },
+    {
+      label: "Địa chỉ",
+      value: patient.address || "-",
+    },
+    {
+      label: "Trường học",
+      value: patient.schoolName || "-",
+    },
+    {
+      label: "Lớp",
+      value: patient.grade || "-",
+    },
+  ];
+
+  const columns = [
+    {
+      key: "label",
+      label: "Thông tin",
+      render: (row) => <b>{row.label}</b>,
+    },
+    {
+      key: "value",
+      label: "Giá trị",
+      render: (row) => row.value,
+    },
+  ];
+
   return (
-    <div>
-      <h1 className="dd-page-title">{patient.fullName}</h1>
-      <p className="dd-page-subtitle">
-        H? so chi ti?t b?nh nhi - {patient.patientCode}
-      </p>
+    <Page
+      title={patient.fullName || "Hồ sơ bệnh nhi"}
+      sub={`Hồ sơ chi tiết bệnh nhi - ${patient.patientCode || "-"}.`}
+      actions={
+        <StatusBadge>
+          {patient.status || "ACTIVE"}
+        </StatusBadge>
+      }
+    >
+      <div className="grid cards">
+        <Card>
+          <span className="metricLabel">Mã bệnh nhi</span>
+          <strong className="metric">{patient.patientCode || "-"}</strong>
+        </Card>
 
-      <div className="dd-stat-grid" style={{ marginBottom: 24 }}>
-        <div className="dd-stat-card">
-          <div className="dd-stat-label">M� b?nh nhi</div>
-          <div className="dd-stat-value">{patient.patientCode}</div>
-        </div>
+        <Card>
+          <span className="metricLabel">Giới tính</span>
+          <strong className="metric">{patient.gender || "-"}</strong>
+        </Card>
 
-        <div className="dd-stat-card">
-          <div className="dd-stat-label">Gi?i t�nh</div>
-          <div className="dd-stat-value">{patient.gender || "-"}</div>
-        </div>
+        <Card>
+          <span className="metricLabel">Ngày sinh</span>
+          <strong className="metric">{patient.dateOfBirth || "-"}</strong>
+        </Card>
 
-        <div className="dd-stat-card">
-          <div className="dd-stat-label">Ng�y sinh</div>
-          <div className="dd-stat-value" style={{ fontSize: 22 }}>
-            {patient.dateOfBirth || "-"}
-          </div>
-        </div>
-
-        <div className="dd-stat-card">
-          <div className="dd-stat-label">Tr?ng th�i</div>
-          <div style={{ marginTop: 14 }}>
-            <span className="dd-badge dd-badge-green">
-              {patient.status || "ACTIVE"}
-            </span>
-          </div>
-        </div>
+        <Card>
+          <span className="metricLabel">Trạng thái</span>
+          <strong className="metric">{patient.status || "ACTIVE"}</strong>
+        </Card>
       </div>
 
-      <div className="dd-card">
-        <h2 style={{ marginTop: 0, color: "var(--dd-primary-dark)" }}>
-          Th�ng tin h�nh ch�nh
-        </h2>
-
-        <table className="dd-table">
-          <tbody>
-            <tr>
-              <th>H? t�n</th>
-              <td>{patient.fullName}</td>
-            </tr>
-            <tr>
-              <th>M� b?nh vi?n</th>
-              <td>{patient.hospitalPatientCode || "-"}</td>
-            </tr>
-            <tr>
-              <th>�?a ch?</th>
-              <td>{patient.address || "-"}</td>
-            </tr>
-            <tr>
-              <th>Tru?ng h?c</th>
-              <td>{patient.schoolName || "-"}</td>
-            </tr>
-            <tr>
-              <th>L?p</th>
-              <td>{patient.grade || "-"}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
+      <Card title="Thông tin hành chính">
+        <Table
+          rows={infoRows}
+          columns={columns}
+          empty="Chưa có thông tin hành chính."
+        />
+      </Card>
+    </Page>
   );
 }

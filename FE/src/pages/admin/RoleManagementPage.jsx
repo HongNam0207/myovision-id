@@ -1,47 +1,127 @@
 import { useEffect, useState } from "react";
 import { roleApi } from "../../api/roles.api";
+import {
+  Page,
+  Card,
+  Table,
+  Notice,
+  StatusBadge,
+} from "../../components/ui/AppUI";
 
 export default function RoleManagementPage() {
   const [roles, setRoles] = useState([]);
   const [permissions, setPermissions] = useState([]);
+  const [notice, setNotice] = useState("Đang tải role và permission...");
 
   useEffect(() => {
-    roleApi.getAll()
-      .then((res) => setRoles(res.data?.data?.items || res.data?.data || []))
-      .catch(() => setRoles([]));
-
-    roleApi.getPermissions()
-      .then((res) => setPermissions(res.data?.data?.items || res.data?.data || []))
-      .catch(() => setPermissions([]));
+    Promise.all([
+      roleApi.getAll(),
+      roleApi.getPermissions(),
+    ])
+      .then(([rolesRes, permissionsRes]) => {
+        setRoles(rolesRes.data?.data?.items || rolesRes.data?.data || []);
+        setPermissions(
+          permissionsRes.data?.data?.items ||
+          permissionsRes.data?.data ||
+          []
+        );
+        setNotice("");
+      })
+      .catch(() => {
+        setRoles([]);
+        setPermissions([]);
+        setNotice("Không tải được dữ liệu phân quyền.");
+      });
   }, []);
 
-  return (
-    <div className="grid gap-6 p-6 lg:grid-cols-2">
-      <section>
-        <h1 className="text-2xl font-bold">Role Management</h1>
-        <div className="mt-4 rounded-xl border bg-white p-4">
-          {roles.map((r) => (
-            <div key={r.roleId || r.id} className="border-b py-3 last:border-0">
-              <div className="font-semibold">{r.roleCode}</div>
-              <div className="text-sm text-gray-500">{r.roleName}</div>
-            </div>
-          ))}
-          {!roles.length && <p className="text-gray-500">Chua c� role.</p>}
+  const roleColumns = [
+    {
+      key: "roleCode",
+      label: "Role Code",
+      render: (row) => (
+        <div>
+          <b>{row.roleCode || "-"}</b>
+          <div className="hint">{row.roleName || "-"}</div>
         </div>
-      </section>
+      ),
+    },
+    {
+      key: "description",
+      label: "Mô tả",
+      render: (row) => row.description || "Không có mô tả",
+    },
+    {
+      key: "status",
+      label: "Trạng thái",
+      render: (row) => (
+        <StatusBadge>
+          {row.isActive === false ? "Inactive" : "Active"}
+        </StatusBadge>
+      ),
+    },
+  ];
 
-      <section>
-        <h2 className="text-2xl font-bold">Permissions</h2>
-        <div className="mt-4 rounded-xl border bg-white p-4">
-          {permissions.map((p) => (
-            <div key={p.permissionId || p.id} className="border-b py-3 last:border-0">
-              <div className="font-semibold">{p.permissionCode}</div>
-              <div className="text-sm text-gray-500">{p.permissionName}</div>
-            </div>
-          ))}
-          {!permissions.length && <p className="text-gray-500">Chua c� permission.</p>}
+  const permissionColumns = [
+    {
+      key: "permissionCode",
+      label: "Permission Code",
+      render: (row) => (
+        <div>
+          <b>{row.permissionCode || "-"}</b>
+          <div className="hint">{row.permissionName || "-"}</div>
         </div>
-      </section>
-    </div>
+      ),
+    },
+    {
+      key: "moduleName",
+      label: "Module",
+      render: (row) => row.moduleName || "-",
+    },
+    {
+      key: "description",
+      label: "Mô tả",
+      render: (row) => row.description || "-",
+    },
+  ];
+
+  return (
+    <Page
+      title="Role & Permission Management"
+      sub="Quản lý role, permission và phân quyền hệ thống MYOVISION ID."
+    >
+      <Notice type={notice.includes("Không") ? "error" : "info"}>
+        {notice}
+      </Notice>
+
+      <div className="grid two">
+        <Card title="Danh sách Role">
+          <div className="grid cards" style={{ marginBottom: 16 }}>
+            <Card>
+              <span className="metricLabel">Tổng Role</span>
+              <strong className="metric">{roles.length}</strong>
+            </Card>
+
+            <Card>
+              <span className="metricLabel">Permissions</span>
+              <strong className="metric">{permissions.length}</strong>
+            </Card>
+          </div>
+
+          <Table
+            rows={roles}
+            columns={roleColumns}
+            empty="Chưa có dữ liệu role."
+          />
+        </Card>
+
+        <Card title="Danh sách Permission">
+          <Table
+            rows={permissions}
+            columns={permissionColumns}
+            empty="Chưa có dữ liệu permission."
+          />
+        </Card>
+      </div>
+    </Page>
   );
 }
