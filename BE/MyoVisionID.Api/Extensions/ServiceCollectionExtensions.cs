@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -26,8 +26,16 @@ namespace MyoVisionID.Api.Extensions
             services.AddScoped<IParentService, ParentService>();
             services.AddScoped<IPatientParentService, PatientParentService>();
             services.AddScoped<IParentPortalService, ParentPortalService>();
+            services.AddScoped<IReportService, ReportService>();
+            services.AddScoped<IDashboardService, DashboardService>();
             services.AddScoped<IVisitService, VisitService>();
             services.AddScoped<IVisitApprovalService, VisitApprovalService>();
+            services.AddScoped<IClinicalIntakeService, ClinicalIntakeService>();
+            services.AddScoped<IEyeMeasurementService, EyeMeasurementService>();
+            services.AddScoped<IDoctorCoreService, DoctorCoreService>();
+            services.AddScoped<ITreatmentService, TreatmentService>();
+            services.AddScoped<IProgressService, ProgressService>();
+            services.AddScoped<IAppointmentService, AppointmentService>();
             services.AddScoped<IAuthorizationHandler, PermissionHandler>();
 
             return services;
@@ -123,6 +131,14 @@ namespace MyoVisionID.Api.Extensions
         }
     }
 }
+
+
+
+
+
+
+
+
 
 
 
