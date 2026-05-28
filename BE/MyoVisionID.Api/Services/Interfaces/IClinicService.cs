@@ -11,3 +11,4 @@ public interface IClinicService
     Task ChangeStatusAsync(long clinicId, bool isActive);
     Task DeleteAsync(long clinicId);
 }
+

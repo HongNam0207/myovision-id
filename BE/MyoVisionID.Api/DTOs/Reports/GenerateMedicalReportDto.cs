@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using MyoVisionID.Api.Common.Constants;
 
 namespace MyoVisionID.Api.DTOs.Reports;
@@ -18,3 +18,4 @@ public class GenerateMedicalReportDto
 
     public bool IsVisibleToParent { get; set; } = true;
 }
+

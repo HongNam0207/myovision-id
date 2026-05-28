@@ -1,92 +1,148 @@
-﻿import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { getPatientsApi } from "../api/patients.api";
+import { patientApi } from "../api/patients.api";
 
 export default function PatientList() {
   const [patients, setPatients] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadPatients();
+    patientApi.getAll()
+      .then((res) => {
+        const data = res.data?.data?.items || res.data?.data || [];
+        setPatients(data);
+      })
+      .catch(() => setPatients([]))
+      .finally(() => setLoading(false));
   }, []);
 
-  async function loadPatients() {
-    try {
-      const res = await getPatientsApi();
-      const data = res.data ?? res;
-
-      if (Array.isArray(data)) {
-        setPatients(data);
-      } else if (Array.isArray(data.items)) {
-        setPatients(data.items);
-      } else {
-        setPatients([]);
-      }
-    } catch (error) {
-      console.error(error);
-      setPatients([]);
-    } finally {
-      setLoading(false);
-    }
-  }
-
   return (
-    <div className="min-h-screen bg-slate-100 p-6">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold">Patients</h1>
-        <p className="text-slate-500">Patient list</p>
+    <div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: 24,
+        }}
+      >
+        <div>
+          <h1
+            style={{
+              fontSize: 36,
+              fontWeight: "bold",
+              margin: 0,
+              color: "#0f172a",
+            }}
+          >
+            Patient List
+          </h1>
+
+          <p style={{ marginTop: 8, color: "#64748b" }}>
+            Patient management and clinical tracking.
+          </p>
+        </div>
+
+        <button
+          style={{
+            background: "#2563eb",
+            color: "white",
+            border: "none",
+            borderRadius: 12,
+            padding: "12px 18px",
+            fontWeight: 600,
+          }}
+        >
+          Create Patient
+        </button>
       </div>
 
-      <div className="overflow-hidden rounded-2xl bg-white shadow">
-        <table className="min-w-full">
-          <thead className="bg-slate-50">
+      <div
+        style={{
+          background: "white",
+          borderRadius: 18,
+          border: "1px solid #e2e8f0",
+          overflow: "hidden",
+        }}
+      >
+        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+          <thead style={{ background: "#f8fafc" }}>
             <tr>
-              <th className="px-4 py-3 text-left">Code</th>
-              <th className="px-4 py-3 text-left">Full name</th>
-              <th className="px-4 py-3 text-left">Gender</th>
-              <th className="px-4 py-3 text-left">Date of birth</th>
-              <th className="px-4 py-3 text-left">Action</th>
+              <th style={thStyle}>Patient Code</th>
+              <th style={thStyle}>Full Name</th>
+              <th style={thStyle}>Gender</th>
+              <th style={thStyle}>Clinic</th>
+              <th style={thStyle}>Status</th>
+              <th style={thStyle}>Action</th>
             </tr>
           </thead>
 
           <tbody>
-            {loading ? (
+            {loading && (
               <tr>
-                <td colSpan="5" className="px-4 py-10 text-center">
-                  Loading...
+                <td colSpan="6" style={emptyStyle}>
+                  Loading patients...
                 </td>
               </tr>
-            ) : patients.length === 0 ? (
-              <tr>
-                <td colSpan="5" className="px-4 py-10 text-center">
-                  No data
-                </td>
-              </tr>
-            ) : (
-              patients.map((patient) => {
-                const id = patient.patientId || patient.id;
-
-                return (
-                  <tr key={id} className="border-t">
-                    <td className="px-4 py-3">{patient.patientCode}</td>
-                    <td className="px-4 py-3">{patient.fullName}</td>
-                    <td className="px-4 py-3">{patient.gender}</td>
-                    <td className="px-4 py-3">{patient.dateOfBirth}</td>
-                    <td className="px-4 py-3">
-                      <Link
-                        to={`/patients/${id}`}
-                        className="rounded-lg bg-blue-600 px-3 py-2 text-sm text-white"
-                      >
-                        View
-                      </Link>
-                    </td>
-                  </tr>
-                );
-              })
             )}
+
+            {!loading && patients.length === 0 && (
+              <tr>
+                <td colSpan="6" style={emptyStyle}>
+                  No patient data found.
+                </td>
+              </tr>
+            )}
+
+            {patients.map((patient) => (
+              <tr key={patient.patientId || patient.id}>
+                <td style={tdStyle}>{patient.patientCode}</td>
+                <td style={tdStyle}>{patient.fullName}</td>
+                <td style={tdStyle}>{patient.gender}</td>
+                <td style={tdStyle}>
+                  {patient.clinicName || patient.clinic?.clinicName || "-"}
+                </td>
+                <td style={tdStyle}>{patient.status}</td>
+
+                <td style={tdStyle}>
+                  <Link
+                    to={`/patients/${patient.patientId || patient.id}`}
+                    style={{
+                      background: "#dbeafe",
+                      color: "#1d4ed8",
+                      padding: "8px 12px",
+                      borderRadius: 10,
+                      fontWeight: 600,
+                    }}
+                  >
+                    View Detail
+                  </Link>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
     </div>
   );
 }
+
+const thStyle = {
+  textAlign: "left",
+  padding: 16,
+  fontSize: 14,
+  color: "#475569",
+  borderBottom: "1px solid #e2e8f0",
+};
+
+const tdStyle = {
+  padding: 16,
+  borderBottom: "1px solid #f1f5f9",
+  color: "#0f172a",
+};
+
+const emptyStyle = {
+  padding: 40,
+  textAlign: "center",
+  color: "#64748b",
+};

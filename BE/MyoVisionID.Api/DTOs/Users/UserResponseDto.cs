@@ -16,3 +16,4 @@ namespace MyoVisionID.Api.DTOs.Users
         public List<string> Roles { get; set; } = new();
     }
 }
+

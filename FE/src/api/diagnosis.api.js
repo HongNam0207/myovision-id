@@ -1,13 +1,16 @@
-﻿import axiosClient from "./axiosClient";
+import axiosClient from "./axiosClient";
 
-export const getDiagnosisApi = async (visitId) => {
-  return axiosClient.get(`/visits/${visitId}/diagnosis`);
-};
+export const getDiagnosisApi = async (visitId) =>
+  axiosClient.get(`/visits/${visitId}/diagnosis`);
 
-export const createDiagnosisApi = async (visitId, payload) => {
-  return axiosClient.post(`/visits/${visitId}/diagnosis`, payload);
-};
+export const createDiagnosisApi = async (visitId, payload) =>
+  axiosClient.post(`/visits/${visitId}/diagnosis`, payload);
 
-export const updateDiagnosisApi = async (diagnosisId, payload) => {
-  return axiosClient.put(`/diagnoses/${diagnosisId}`, payload);
+export const updateDiagnosisApi = async (diagnosisId, payload) =>
+  axiosClient.put(`/diagnoses/${diagnosisId}`, payload);
+
+export const diagnosisApi = {
+  getByVisitId: getDiagnosisApi,
+  create: createDiagnosisApi,
+  update: updateDiagnosisApi,
 };

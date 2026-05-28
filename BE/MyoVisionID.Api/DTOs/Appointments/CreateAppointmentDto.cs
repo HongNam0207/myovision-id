@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using MyoVisionID.Api.Common.Constants;
 using MyoVisionID.Api.Common.Validation;
 
@@ -32,4 +32,5 @@ public class CreateAppointmentDto
     [StringLength(1000)]
     public string? Note { get; set; }
 }
+
 

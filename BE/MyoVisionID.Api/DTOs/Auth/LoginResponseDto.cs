@@ -1,4 +1,4 @@
-﻿namespace MyoVisionID.Api.DTOs.Auth
+namespace MyoVisionID.Api.DTOs.Auth
 {
     public class LoginResponseDto
     {
@@ -11,4 +11,5 @@
         public List<string> Permissions { get; set; } = new();
     }
 }
+
 

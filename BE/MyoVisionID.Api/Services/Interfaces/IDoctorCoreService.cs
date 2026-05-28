@@ -1,4 +1,4 @@
-﻿using MyoVisionID.Api.DTOs.DoctorCore;
+using MyoVisionID.Api.DTOs.DoctorCore;
 
 namespace MyoVisionID.Api.Services.Interfaces;
 
@@ -16,3 +16,4 @@ public interface IDoctorCoreService
     Task<List<DoctorNoteDto>> GetDoctorNotesAsync(long visitId);
     Task<DoctorNoteDto> CreateDoctorNoteAsync(long visitId, CreateDoctorNoteDto request);
 }
+

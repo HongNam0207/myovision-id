@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace MyoVisionID.Api.Entities;
@@ -65,3 +65,4 @@ public partial class Visit
 
     public virtual ICollection<VisitStatusLog> VisitStatusLogs { get; set; } = new List<VisitStatusLog>();
 }
+

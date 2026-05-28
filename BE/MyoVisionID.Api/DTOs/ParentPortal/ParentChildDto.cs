@@ -1,4 +1,4 @@
-﻿namespace MyoVisionID.Api.DTOs.ParentPortal;
+namespace MyoVisionID.Api.DTOs.ParentPortal;
 
 public class ParentChildDto
 {
@@ -11,3 +11,4 @@ public class ParentChildDto
     public string? Grade { get; set; }
     public string? Status { get; set; }
 }
+

@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using MyoVisionID.Api.Common.Constants;
 
 namespace MyoVisionID.Api.DTOs.Measurements;
@@ -45,3 +45,4 @@ public class CreateEyeBiometricDto
     [StringLength(1000)]
     public string? Note { get; set; }
 }
+

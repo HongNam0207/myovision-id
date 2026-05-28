@@ -55,7 +55,7 @@ namespace MyoVisionID.Api.Services
                 Gender = request.Gender,
                 DateOfBirth = request.DateOfBirth.HasValue ? DateOnly.FromDateTime(request.DateOfBirth.Value) : null,
                 Status = "ACTIVE",
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow.AddHours(7)
             };
 
             _context.Users.Add(user);
@@ -67,7 +67,7 @@ namespace MyoVisionID.Api.Services
                 {
                     UserId = user.UserId,
                     RoleId = roleId,
-                    AssignedAt = DateTime.UtcNow
+                    AssignedAt = DateTime.UtcNow.AddHours(7)
                 });
             }
 
@@ -90,7 +90,7 @@ namespace MyoVisionID.Api.Services
             user.DateOfBirth = request.DateOfBirth.HasValue ? DateOnly.FromDateTime(request.DateOfBirth.Value) : null;
             user.AvatarUrl = request.AvatarUrl;
             user.Status = request.Status;
-            user.UpdatedAt = DateTime.UtcNow;
+            user.UpdatedAt = DateTime.UtcNow.AddHours(7);
 
             await _context.SaveChangesAsync();
 
@@ -105,7 +105,7 @@ namespace MyoVisionID.Api.Services
                 throw new KeyNotFoundException("User not found.");
 
             user.Status = status;
-            user.UpdatedAt = DateTime.UtcNow;
+            user.UpdatedAt = DateTime.UtcNow.AddHours(7);
 
             await _context.SaveChangesAsync();
         }
@@ -118,7 +118,7 @@ namespace MyoVisionID.Api.Services
                 throw new KeyNotFoundException("User not found.");
 
             user.Status = "DELETED";
-            user.UpdatedAt = DateTime.UtcNow;
+            user.UpdatedAt = DateTime.UtcNow.AddHours(7);
 
             await _context.SaveChangesAsync();
         }
@@ -134,7 +134,7 @@ namespace MyoVisionID.Api.Services
             {
                 UserId = userId,
                 RoleId = roleId,
-                AssignedAt = DateTime.UtcNow
+                AssignedAt = DateTime.UtcNow.AddHours(7)
             });
 
             await _context.SaveChangesAsync();
@@ -199,3 +199,4 @@ namespace MyoVisionID.Api.Services
         }
     }
 }
+

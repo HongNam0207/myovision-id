@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using MyoVisionID.Api.Common.Constants;
 
 namespace MyoVisionID.Api.DTOs.Appointments;
@@ -12,3 +12,4 @@ public class ChangeAppointmentStatusDto
     [StringLength(1000)]
     public string? Note { get; set; }
 }
+

@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using MyoVisionID.Api.Data;
 using MyoVisionID.Api.Services.Interfaces;
 
@@ -17,7 +17,7 @@ public class DashboardService : IDashboardService
 
     public async Task<object> GetAdminOverviewAsync()
     {
-        var today = DateTime.UtcNow.Date;
+        var today = DateTime.UtcNow.AddHours(7).Date;
 
         return new
         {
@@ -33,14 +33,14 @@ public class DashboardService : IDashboardService
             HighRiskPatients = await _context.RiskAssessments.CountAsync(x => x.RiskLevel == "HIGH"),
             ActiveTreatmentPlans = await _context.TreatmentPlans.CountAsync(x => x.Status == "ACTIVE"),
             UpcomingAppointments = await _context.Appointments.CountAsync(x =>
-                x.AppointmentDatetime >= DateTime.UtcNow &&
+                x.AppointmentDatetime >= DateTime.UtcNow.AddHours(7) &&
                 x.Status == "BOOKED")
         };
     }
 
     public async Task<object> GetDoctorTodayVisitsAsync()
     {
-        var today = DateTime.UtcNow.Date;
+        var today = DateTime.UtcNow.AddHours(7).Date;
         var userId = _currentUser.UserId;
 
         var visits = await _context.Visits
@@ -168,7 +168,7 @@ public class DashboardService : IDashboardService
                 UpcomingAppointment = _context.Appointments
                     .Where(a =>
                         a.PatientId == x.PatientId &&
-                        a.AppointmentDatetime >= DateTime.UtcNow &&
+                        a.AppointmentDatetime >= DateTime.UtcNow.AddHours(7) &&
                         a.Status == "BOOKED")
                     .OrderBy(a => a.AppointmentDatetime)
                     .Select(a => new
@@ -190,3 +190,4 @@ public class DashboardService : IDashboardService
         };
     }
 }
+

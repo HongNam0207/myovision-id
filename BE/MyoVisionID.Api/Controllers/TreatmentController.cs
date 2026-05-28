@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyoVisionID.Api.Common.Models;
 using MyoVisionID.Api.DTOs.Treatments;
@@ -67,3 +67,4 @@ public class TreatmentController : ControllerBase
         return Ok(ApiResponse<object>.Ok(await _service.CreatePlanItemAsync(planId, request)));
     }
 }
+

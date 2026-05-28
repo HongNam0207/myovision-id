@@ -1,4 +1,4 @@
-﻿using MyoVisionID.Api.DTOs.ParentPortal;
+using MyoVisionID.Api.DTOs.ParentPortal;
 
 namespace MyoVisionID.Api.Services.Interfaces;
 
@@ -14,3 +14,4 @@ public interface IParentPortalService
     Task<object> GetChildAppointmentsAsync(long patientId);
     Task<object> CheckAccessAsync(long patientId);
 }
+

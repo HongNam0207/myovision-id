@@ -1,4 +1,4 @@
-﻿import axiosClient from "./axiosClient";
+import axiosClient from "./axiosClient";
 
 export const getVisitReportsApi = async (visitId) => {
   return axiosClient.get(`/visits/${visitId}/reports`);

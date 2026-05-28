@@ -1,4 +1,4 @@
-﻿namespace MyoVisionID.Api.DTOs.DoctorCore;
+namespace MyoVisionID.Api.DTOs.DoctorCore;
 
 public class DiagnosisDto
 {
@@ -15,3 +15,4 @@ public class DiagnosisDto
     public DateTime? CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
 }
+

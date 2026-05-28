@@ -11,3 +11,4 @@ public class VisitStatusLogDto
     public string? Note { get; set; }
     public DateTime? ChangedAt { get; set; }
 }
+

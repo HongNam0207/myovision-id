@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using MyoVisionID.Api.Data;
 using MyoVisionID.Api.DTOs.Measurements;
 using MyoVisionID.Api.Entities;
@@ -73,7 +73,7 @@ public class EyeMeasurementService : IEyeMeasurementService
             Bcva = request.Bcva,
             Note = request.Note,
             MeasuredBy = _currentUser.UserId,
-            MeasuredAt = DateTime.UtcNow
+            MeasuredAt = DateTime.UtcNow.AddHours(7)
         };
 
         _context.EyeRefractions.Add(entity);
@@ -138,7 +138,7 @@ public class EyeMeasurementService : IEyeMeasurementService
             DeviceName = request.DeviceName,
             Note = request.Note,
             MeasuredBy = _currentUser.UserId,
-            MeasuredAt = DateTime.UtcNow
+            MeasuredAt = DateTime.UtcNow.AddHours(7)
         };
 
         _context.EyeBiometrics.Add(entity);
@@ -182,7 +182,7 @@ public class EyeMeasurementService : IEyeMeasurementService
             NpcCm = request.NpcCm,
             Note = request.Note,
             MeasuredBy = _currentUser.UserId,
-            MeasuredAt = DateTime.UtcNow
+            MeasuredAt = DateTime.UtcNow.AddHours(7)
         };
 
         _context.BinocularVisions.Add(entity);
@@ -326,3 +326,4 @@ public class EyeMeasurementService : IEyeMeasurementService
         };
     }
 }
+

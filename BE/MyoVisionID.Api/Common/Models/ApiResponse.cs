@@ -14,3 +14,4 @@ namespace MyoVisionID.Api.Common.Models
             => new() { Success = false, Message = message, Errors = errors };
     }
 }
+

@@ -7,3 +7,4 @@ public class VisitTimelineItemDto
     public string? Note { get; set; }
     public DateTime? EventTime { get; set; }
 }
+

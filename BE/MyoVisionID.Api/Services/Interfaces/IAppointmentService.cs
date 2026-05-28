@@ -1,4 +1,4 @@
-﻿using MyoVisionID.Api.DTOs.Appointments;
+using MyoVisionID.Api.DTOs.Appointments;
 
 namespace MyoVisionID.Api.Services.Interfaces;
 
@@ -14,3 +14,4 @@ public interface IAppointmentService
     Task<NotificationDto> MarkReadAsync(long notificationId);
     Task MarkAllReadAsync();
 }
+

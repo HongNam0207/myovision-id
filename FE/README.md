@@ -1,16 +1,17 @@
-# React + Vite
+# MYOVISION ID FE FINAL
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Run
+```bash
+npm install
+npm run dev
+```
 
-Currently, two official plugins are available:
+Backend default API: `https://localhost:7274/api`.
+Change it in `.env` if your BE uses another port.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Demo accounts from BE seed:
+- admin / 123456
+- doctor01 / 123456
+- optometrist01 / 123456
+- nurse01 / 123456
+- parent01 / 123456

@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using MyoVisionID.Api.Common.Constants;
 using MyoVisionID.Api.Common.Validation;
 
@@ -30,4 +30,5 @@ public class UpdatePatientDto
     [RegularExpression(ValidationRegex.PatientStatus)]
     public string Status { get; set; } = "ACTIVE";
 }
+
 

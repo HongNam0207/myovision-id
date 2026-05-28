@@ -37,3 +37,4 @@ public class CurrentUserService : ICurrentUserService
         return _httpContextAccessor.HttpContext?.User?.IsInRole(role) == true;
     }
 }
+

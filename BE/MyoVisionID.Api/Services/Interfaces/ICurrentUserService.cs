@@ -9,3 +9,4 @@ public interface ICurrentUserService
     bool IsAuthenticated { get; }
     bool IsInRole(string role);
 }
+

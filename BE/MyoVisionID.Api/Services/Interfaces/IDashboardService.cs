@@ -1,4 +1,4 @@
-﻿namespace MyoVisionID.Api.Services.Interfaces;
+namespace MyoVisionID.Api.Services.Interfaces;
 
 public interface IDashboardService
 {
@@ -8,3 +8,4 @@ public interface IDashboardService
     Task<object> GetOptometristWaitingMeasurementAsync();
     Task<object> GetParentChildrenSummaryAsync();
 }
+

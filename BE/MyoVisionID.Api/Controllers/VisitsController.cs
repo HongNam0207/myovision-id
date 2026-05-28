@@ -125,3 +125,4 @@ public class VisitsController : ControllerBase
         return Ok(ApiResponse<object>.Ok(await _service.ChangeStatusAsync(visitId, "CANCELLED", "Visit cancelled")));
     }
 }
+

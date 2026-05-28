@@ -1,4 +1,4 @@
-﻿using MyoVisionID.Api.DTOs.Treatments;
+using MyoVisionID.Api.DTOs.Treatments;
 
 namespace MyoVisionID.Api.Services.Interfaces;
 
@@ -13,3 +13,4 @@ public interface ITreatmentService
     Task<List<TreatmentPlanItemDto>> GetPlanItemsAsync(long planId);
     Task<TreatmentPlanItemDto> CreatePlanItemAsync(long planId, CreateTreatmentPlanItemDto request);
 }
+

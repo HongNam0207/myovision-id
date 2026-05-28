@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyoVisionID.Api.Common.Models;
 using MyoVisionID.Api.DTOs.ClinicalIntakes;
@@ -54,4 +54,5 @@ public class ClinicalIntakesController : ControllerBase
             await _visitService.ChangeStatusAsync(visitId, "WAITING_MEASUREMENT", "Clinical intake completed")));
     }
 }
+
 

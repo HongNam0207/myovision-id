@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace MyoVisionID.Api.DTOs.Common;
 
@@ -18,3 +18,4 @@ public class PaginationQueryDto
 
     public bool IsDescending { get; set; } = false;
 }
+

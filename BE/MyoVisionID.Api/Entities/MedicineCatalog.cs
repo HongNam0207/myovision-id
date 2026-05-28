@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace MyoVisionID.Api.Entities;
@@ -21,3 +21,4 @@ public partial class MedicineCatalog
 
     public virtual ICollection<AtropineDetail> AtropineDetails { get; set; } = new List<AtropineDetail>();
 }
+

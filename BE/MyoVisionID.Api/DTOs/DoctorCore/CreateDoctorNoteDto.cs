@@ -1,4 +1,4 @@
-﻿namespace MyoVisionID.Api.DTOs.DoctorCore;
+namespace MyoVisionID.Api.DTOs.DoctorCore;
 
 public class CreateDoctorNoteDto
 {
@@ -6,3 +6,4 @@ public class CreateDoctorNoteDto
     public string? NoteContent { get; set; }
     public bool IsInternal { get; set; } = true;
 }
+

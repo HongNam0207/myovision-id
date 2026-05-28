@@ -64,3 +64,4 @@ public class PatientsController : ControllerBase
         return Ok(ApiResponse<string>.Ok("Patient deleted."));
     }
 }
+

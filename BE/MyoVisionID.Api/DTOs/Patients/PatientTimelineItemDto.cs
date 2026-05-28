@@ -8,3 +8,4 @@ public class PatientTimelineItemDto
     public string? Status { get; set; }
     public DateTime EventTime { get; set; }
 }
+

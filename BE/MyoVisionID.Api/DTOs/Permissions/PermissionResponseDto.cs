@@ -13,3 +13,4 @@ namespace MyoVisionID.Api.DTOs.Permissions
         public string? Description { get; set; }
     }
 }
+

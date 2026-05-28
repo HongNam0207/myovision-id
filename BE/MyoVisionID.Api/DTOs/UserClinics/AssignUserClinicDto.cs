@@ -4,3 +4,4 @@ public class AssignUserClinicDto
 {
     public long ClinicId { get; set; }
 }
+

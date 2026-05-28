@@ -1,4 +1,4 @@
-﻿namespace MyoVisionID.Api.DTOs.Treatments;
+namespace MyoVisionID.Api.DTOs.Treatments;
 
 public class UpsertTreatmentPlanDto
 {
@@ -10,3 +10,4 @@ public class UpsertTreatmentPlanDto
     public int? FollowUpIntervalDays { get; set; }
     public string? DoctorInstruction { get; set; }
 }
+

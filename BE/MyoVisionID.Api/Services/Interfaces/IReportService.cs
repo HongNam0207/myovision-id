@@ -1,4 +1,4 @@
-﻿using MyoVisionID.Api.DTOs.Reports;
+using MyoVisionID.Api.DTOs.Reports;
 
 namespace MyoVisionID.Api.Services.Interfaces;
 
@@ -10,3 +10,4 @@ public interface IReportService
     Task<MedicalReportDto> UpdateVisibilityAsync(long reportId, bool visible);
     Task<MedicalReportDto> UploadPdfAsync(long reportId, UploadReportPdfDto request);
 }
+

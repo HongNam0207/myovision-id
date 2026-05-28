@@ -1,7 +1,15 @@
 import axios from "axios";
 
+const apiBaseUrl =
+  import.meta.env.VITE_API_BASE_URL ||
+  import.meta.env.VITE_API_URL ||
+  "http://localhost:5286/api";
+
 const axiosClient = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: apiBaseUrl,
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
 axiosClient.interceptors.request.use((config) => {
@@ -15,16 +23,13 @@ axiosClient.interceptors.request.use((config) => {
 });
 
 axiosClient.interceptors.response.use(
-  (response) => response.data,
+  (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      localStorage.removeItem("access_token");
-      localStorage.removeItem("user");
-      window.location.href = "/login";
-    }
+    if (false) {}
 
     return Promise.reject(error);
   }
 );
 
 export default axiosClient;
+

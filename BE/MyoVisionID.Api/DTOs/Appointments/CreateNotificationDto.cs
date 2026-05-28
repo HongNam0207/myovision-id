@@ -1,4 +1,4 @@
-﻿namespace MyoVisionID.Api.DTOs.Appointments;
+namespace MyoVisionID.Api.DTOs.Appointments;
 
 public class CreateNotificationDto
 {
@@ -8,3 +8,4 @@ public class CreateNotificationDto
     public string? Content { get; set; }
     public string? NotificationType { get; set; }
 }
+

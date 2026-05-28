@@ -9,16 +9,17 @@ namespace MyoVisionID.Api.Seed
     {
         public static async Task SeedAsync(AppDbContext context)
         {
-            await context.Database.MigrateAsync();
+            // await context.Database.MigrateAsync();
+            await context.Database.EnsureCreatedAsync();
 
             if (!await context.Roles.AnyAsync())
             {
                 context.Roles.AddRange(
-                    new Role { RoleCode = RoleConstants.Admin, RoleName = "Admin", Description = "Quan tri toan bo he thong", IsActive = true, CreatedAt = DateTime.UtcNow },
-                    new Role { RoleCode = RoleConstants.Ophthalmologist, RoleName = "Bac si nhan khoa", Description = "Chan doan va lap phac do", IsActive = true, CreatedAt = DateTime.UtcNow },
-                    new Role { RoleCode = RoleConstants.Optometrist, RoleName = "Khuc xa nhan khoa", Description = "Nhap thong so do mat", IsActive = true, CreatedAt = DateTime.UtcNow },
-                    new Role { RoleCode = RoleConstants.Nurse, RoleName = "Dieu duong", Description = "Tiep nhan va quan ly hanh chinh", IsActive = true, CreatedAt = DateTime.UtcNow },
-                    new Role { RoleCode = RoleConstants.Parent, RoleName = "Phu huynh", Description = "Theo doi thong tin cua con", IsActive = true, CreatedAt = DateTime.UtcNow }
+                    new Role { RoleCode = RoleConstants.Admin, RoleName = "Admin", Description = "Quan tri toan bo he thong", IsActive = true, CreatedAt = DateTime.UtcNow.AddHours(7) },
+                    new Role { RoleCode = RoleConstants.Ophthalmologist, RoleName = "Bac si nhan khoa", Description = "Chan doan va lap phac do", IsActive = true, CreatedAt = DateTime.UtcNow.AddHours(7) },
+                    new Role { RoleCode = RoleConstants.Optometrist, RoleName = "Khuc xa nhan khoa", Description = "Nhap thong so do mat", IsActive = true, CreatedAt = DateTime.UtcNow.AddHours(7) },
+                    new Role { RoleCode = RoleConstants.Nurse, RoleName = "Dieu duong", Description = "Tiep nhan va quan ly hanh chinh", IsActive = true, CreatedAt = DateTime.UtcNow.AddHours(7) },
+                    new Role { RoleCode = RoleConstants.Parent, RoleName = "Phu huynh", Description = "Theo doi thong tin cua con", IsActive = true, CreatedAt = DateTime.UtcNow.AddHours(7) }
                 );
 
                 await context.SaveChangesAsync();
@@ -94,7 +95,7 @@ namespace MyoVisionID.Api.Seed
                     FullName = fullName,
                     Gender = "Nam",
                     Status = "ACTIVE",
-                    CreatedAt = DateTime.UtcNow
+                    CreatedAt = DateTime.UtcNow.AddHours(7)
                 };
 
                 context.Users.Add(user);
@@ -109,7 +110,7 @@ namespace MyoVisionID.Api.Seed
                 {
                     UserId = user.UserId,
                     RoleId = role.RoleId,
-                    AssignedAt = DateTime.UtcNow
+                    AssignedAt = DateTime.UtcNow.AddHours(7)
                 });
 
                 await context.SaveChangesAsync();
@@ -117,3 +118,4 @@ namespace MyoVisionID.Api.Seed
         }
     }
 }
+

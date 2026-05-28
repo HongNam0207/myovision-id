@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace MyoVisionID.Api.Entities;
@@ -15,3 +15,4 @@ public partial class RolePermission
 
     public virtual Role Role { get; set; } = null!;
 }
+

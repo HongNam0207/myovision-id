@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using MyoVisionID.Api.Data;
 using MyoVisionID.Api.DTOs.Appointments;
 using MyoVisionID.Api.Entities;
@@ -83,7 +83,7 @@ public class AppointmentService : IAppointmentService
             Reason = request.Reason,
             Note = request.Note,
             CreatedBy = _currentUser.UserId,
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow.AddHours(7)
         };
 
         _context.Appointments.Add(entity);
@@ -102,7 +102,7 @@ public class AppointmentService : IAppointmentService
             throw new InvalidOperationException("Invalid appointment status.");
 
         entity.Status = status;
-        entity.UpdatedAt = DateTime.UtcNow;
+        entity.UpdatedAt = DateTime.UtcNow.AddHours(7);
 
         await _context.SaveChangesAsync();
 
@@ -154,7 +154,7 @@ public class AppointmentService : IAppointmentService
             Content = request.Content,
             NotificationType = request.NotificationType,
             IsRead = false,
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow.AddHours(7)
         };
 
         _context.ParentNotifications.Add(entity);
@@ -252,4 +252,5 @@ public class AppointmentService : IAppointmentService
         };
     }
 }
+
 

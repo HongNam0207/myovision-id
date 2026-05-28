@@ -1,4 +1,4 @@
-﻿namespace MyoVisionID.Api.DTOs.DoctorCore;
+namespace MyoVisionID.Api.DTOs.DoctorCore;
 
 public class UpsertDiagnosisDto
 {
@@ -9,3 +9,4 @@ public class UpsertDiagnosisDto
     public string? SeverityLevel { get; set; }
     public string? ProgressionStatus { get; set; }
 }
+

@@ -1,4 +1,4 @@
-﻿using MyoVisionID.Api.DTOs.Auth;
+using MyoVisionID.Api.DTOs.Auth;
 
 namespace MyoVisionID.Api.Services.Interfaces
 {
@@ -13,3 +13,4 @@ namespace MyoVisionID.Api.Services.Interfaces
         Task LogoutAsync(string refreshToken);
     }
 }
+

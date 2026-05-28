@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using MyoVisionID.Api.Common.Constants;
 using MyoVisionID.Api.Common.Validation;
 
@@ -36,3 +36,4 @@ public class CreateUserDto
 
     public List<long> RoleIds { get; set; } = new();
 }
+

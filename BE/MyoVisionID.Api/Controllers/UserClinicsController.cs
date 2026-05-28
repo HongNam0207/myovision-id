@@ -38,3 +38,4 @@ public class UserClinicsController : ControllerBase
         return Ok(ApiResponse<string>.Ok("Clinic removed from user."));
     }
 }
+

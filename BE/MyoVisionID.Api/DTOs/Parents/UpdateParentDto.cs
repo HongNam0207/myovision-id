@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using MyoVisionID.Api.Common.Constants;
 
 namespace MyoVisionID.Api.DTOs.Parents;
@@ -26,3 +26,4 @@ public class UpdateParentDto
     [StringLength(50)]
     public string? IdentityNumber { get; set; }
 }
+

@@ -1,4 +1,4 @@
-﻿namespace MyoVisionID.Api.DTOs.Appointments;
+namespace MyoVisionID.Api.DTOs.Appointments;
 
 public class AppointmentDto
 {
@@ -16,3 +16,4 @@ public class AppointmentDto
     public DateTime? CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
 }
+

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace MyoVisionID.Api.Entities;
@@ -31,3 +31,4 @@ public partial class MedicalReport
 
     public virtual Visit Visit { get; set; } = null!;
 }
+

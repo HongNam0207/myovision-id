@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyoVisionID.Api.Common.Models;
 using MyoVisionID.Api.DTOs.Appointments;
@@ -75,3 +75,4 @@ public class AppointmentController : ControllerBase
         return Ok(ApiResponse<object>.Ok(new { Message = "All notifications marked as read." }));
     }
 }
+

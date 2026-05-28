@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace MyoVisionID.Api.Entities;
@@ -19,3 +19,4 @@ public partial class OrthoKLensCatalog
 
     public virtual ICollection<OrthoKDetail> OrthoKDetails { get; set; } = new List<OrthoKDetail>();
 }
+

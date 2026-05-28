@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using MyoVisionID.Api.Data;
 using MyoVisionID.Api.DTOs.ClinicalIntakes;
 using MyoVisionID.Api.Entities;
@@ -50,7 +50,7 @@ public class ClinicalIntakeService : IClinicalIntakeService
             VisitId = visit.VisitId,
             PatientId = visit.PatientId,
             EnteredBy = _currentUser.UserId,
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow.AddHours(7)
         };
 
         Apply(intake, request);
@@ -79,7 +79,7 @@ public class ClinicalIntakeService : IClinicalIntakeService
         ValidateRequest(request);
 
         Apply(intake, request);
-        intake.UpdatedAt = DateTime.UtcNow;
+        intake.UpdatedAt = DateTime.UtcNow.AddHours(7);
 
         await _context.SaveChangesAsync();
 
@@ -189,3 +189,4 @@ public class ClinicalIntakeService : IClinicalIntakeService
         };
     }
 }
+

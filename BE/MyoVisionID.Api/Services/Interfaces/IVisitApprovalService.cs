@@ -8,3 +8,4 @@ public interface IVisitApprovalService
     Task<VisitApprovalDto> RejectAsync(long visitId, string? note);
     Task<List<VisitApprovalDto>> GetApprovalsAsync(long visitId);
 }
+

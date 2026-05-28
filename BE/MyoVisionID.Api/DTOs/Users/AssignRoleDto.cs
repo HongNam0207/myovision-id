@@ -5,3 +5,4 @@ namespace MyoVisionID.Api.DTOs.Users
         public long RoleId { get; set; }
     }
 }
+

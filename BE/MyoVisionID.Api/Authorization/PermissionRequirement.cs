@@ -12,3 +12,4 @@ namespace MyoVisionID.Api.Authorization
         }
     }
 }
+

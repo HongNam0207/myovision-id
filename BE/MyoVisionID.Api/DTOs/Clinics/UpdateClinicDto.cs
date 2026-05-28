@@ -9,3 +9,4 @@ public class UpdateClinicDto
     public long? ManagerUserId { get; set; }
     public bool IsActive { get; set; } = true;
 }
+

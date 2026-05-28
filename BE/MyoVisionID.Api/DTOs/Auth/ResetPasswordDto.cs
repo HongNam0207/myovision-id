@@ -1,4 +1,4 @@
-﻿namespace MyoVisionID.Api.DTOs.Auth
+namespace MyoVisionID.Api.DTOs.Auth
 {
     public class ResetPasswordDto
     {
@@ -6,3 +6,4 @@
         public string NewPassword { get; set; } = string.Empty;
     }
 }
+

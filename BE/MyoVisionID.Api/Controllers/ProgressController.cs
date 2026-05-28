@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyoVisionID.Api.Common.Models;
 using MyoVisionID.Api.DTOs.Progress;
@@ -67,3 +67,4 @@ public class ProgressController : ControllerBase
             await _service.CompareVisitsAsync(patientId, fromVisitId, toVisitId)));
     }
 }
+

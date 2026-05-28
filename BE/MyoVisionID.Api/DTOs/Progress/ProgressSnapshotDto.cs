@@ -1,4 +1,4 @@
-﻿namespace MyoVisionID.Api.DTOs.Progress;
+namespace MyoVisionID.Api.DTOs.Progress;
 
 public class ProgressSnapshotDto
 {
@@ -21,3 +21,4 @@ public class ProgressSnapshotDto
     public string? ProgressionNote { get; set; }
     public DateTime? CreatedAt { get; set; }
 }
+

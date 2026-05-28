@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using MyoVisionID.Api.Data;
 using MyoVisionID.Api.DTOs.DoctorCore;
 using MyoVisionID.Api.Entities;
@@ -91,7 +91,7 @@ public class DoctorCoreService : IDoctorCoreService
                 PatientId = visit.PatientId,
                 RiskModelId = request.RiskModelId,
                 AssessedBy = _currentUser.UserId,
-                AssessedAt = DateTime.UtcNow
+                AssessedAt = DateTime.UtcNow.AddHours(7)
             };
             _context.RiskAssessments.Add(entity);
         }
@@ -129,7 +129,7 @@ public class DoctorCoreService : IDoctorCoreService
                 VisitId = visit.VisitId,
                 PatientId = visit.PatientId,
                 DoctorId = _currentUser.UserId,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow.AddHours(7)
             };
 
             _context.DoctorDiagnoses.Add(entity);
@@ -141,7 +141,7 @@ public class DoctorCoreService : IDoctorCoreService
         entity.MyopiaType = request.MyopiaType;
         entity.SeverityLevel = request.SeverityLevel;
         entity.ProgressionStatus = request.ProgressionStatus;
-        entity.UpdatedAt = DateTime.UtcNow;
+        entity.UpdatedAt = DateTime.UtcNow.AddHours(7);
 
         await _context.SaveChangesAsync();
 
@@ -194,7 +194,7 @@ public class DoctorCoreService : IDoctorCoreService
             NoteType = string.IsNullOrWhiteSpace(request.NoteType) ? "CLINICAL" : request.NoteType,
             NoteContent = request.NoteContent,
             IsInternal = request.IsInternal,
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow.AddHours(7)
         };
 
         _context.DoctorNotes.Add(entity);
@@ -218,7 +218,7 @@ public class DoctorCoreService : IDoctorCoreService
 
     private static int CalculateAge(DateOnly dateOfBirth)
     {
-        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        var today = DateOnly.FromDateTime(DateTime.UtcNow.AddHours(7));
         var age = today.Year - dateOfBirth.Year;
 
         if (dateOfBirth > today.AddYears(-age))
@@ -289,4 +289,5 @@ public class DoctorCoreService : IDoctorCoreService
         };
     }
 }
+
 

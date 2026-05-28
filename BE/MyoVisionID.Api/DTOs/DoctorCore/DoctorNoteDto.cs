@@ -1,4 +1,4 @@
-﻿namespace MyoVisionID.Api.DTOs.DoctorCore;
+namespace MyoVisionID.Api.DTOs.DoctorCore;
 
 public class DoctorNoteDto
 {
@@ -11,3 +11,4 @@ public class DoctorNoteDto
     public bool IsInternal { get; set; }
     public DateTime? CreatedAt { get; set; }
 }
+

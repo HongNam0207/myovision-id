@@ -36,7 +36,7 @@ namespace MyoVisionID.Api.Helpers
 
             var token = new JwtSecurityToken(
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(expireMinutes),
+                expires: DateTime.UtcNow.AddHours(7).AddMinutes(expireMinutes),
                 signingCredentials: creds
             );
 

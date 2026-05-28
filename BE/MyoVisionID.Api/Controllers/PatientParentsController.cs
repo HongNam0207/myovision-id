@@ -38,3 +38,4 @@ public class PatientParentsController : ControllerBase
         return Ok(ApiResponse<string>.Ok("Parent removed from patient."));
     }
 }
+

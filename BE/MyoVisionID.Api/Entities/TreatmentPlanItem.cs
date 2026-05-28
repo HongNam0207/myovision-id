@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace MyoVisionID.Api.Entities;
@@ -31,3 +31,4 @@ public partial class TreatmentPlanItem
 
     public virtual TreatmentPlan TreatmentPlan { get; set; } = null!;
 }
+

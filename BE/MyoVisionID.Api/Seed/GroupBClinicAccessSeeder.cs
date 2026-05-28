@@ -28,7 +28,7 @@ public static class GroupBClinicAccessSeeder
                 {
                     UserId = user.UserId,
                     ClinicId = clinic.ClinicId,
-                    AssignedAt = DateTime.UtcNow
+                    AssignedAt = DateTime.UtcNow.AddHours(7)
                 });
             }
         }
@@ -36,3 +36,4 @@ public static class GroupBClinicAccessSeeder
         await context.SaveChangesAsync();
     }
 }
+

@@ -1,53 +1,66 @@
-﻿import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-
-import Login from "../auth/Login";
-import ProtectedRoute from "../auth/ProtectedRoute";
-import MainLayout from "../layouts/MainLayout";
-
+import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
+import Login from "../pages/Login";
+import Unauthorized from "../pages/Unauthorized";
+import AppLayout from "../layouts/AppLayout";
 import AdminDashboard from "../pages/dashboard/AdminDashboard";
-import DoctorDashboard from "../pages/dashboard/DoctorDashboard";
-import NurseDashboard from "../pages/dashboard/NurseDashboard";
-import OptometristDashboard from "../pages/dashboard/OptometristDashboard";
-import ParentDashboard from "../pages/dashboard/ParentDashboard";
+import PatientList from "../pages/PatientList";
+import PatientDetail from "../pages/PatientDetail";
+import VisitQueue from "../pages/VisitQueue";
+import VisitDetail from "../pages/VisitDetail";
+import ClinicalIntake from "../pages/ClinicalIntake";
+import Refraction from "../pages/Refraction";
+import Biometric from "../pages/Biometric";
+import BinocularVision from "../pages/BinocularVision";
+import RiskAssessment from "../pages/RiskAssessment";
+import Diagnosis from "../pages/Diagnosis";
+import TreatmentPlan from "../pages/TreatmentPlan";
+import ParentChildren from "../pages/ParentChildren";
+import AppointmentList from "../pages/AppointmentList";
+import NotificationCenter from "../pages/NotificationCenter";
+import MedicalReport from "../pages/MedicalReport";
+import UserManagementPage from "../pages/admin/UserManagementPage";
+import RoleManagementPage from "../pages/admin/RoleManagementPage";
+import ClinicManagementPage from "../pages/admin/ClinicManagementPage";
+import ProtectedRoute from "../auth/ProtectedRoute";
 
-import PatientList from "../pages/patients/PatientList";
-import PatientDetail from "../pages/patients/PatientDetail";
+const router = createBrowserRouter([
+  { path: "/", element: <Navigate to="/dashboard" replace /> },
+  { path: "/login", element: <Login /> },
+  { path: "/unauthorized", element: <Unauthorized /> },
 
-import VisitQueue from "../pages/visits/VisitQueue";
-import VisitDetail from "../pages/visits/VisitDetail";
+  {
+    element: <ProtectedRoute />,
+    children: [
+      {
+        element: <AppLayout />,
+        children: [
+          { path: "/dashboard", element: <AdminDashboard /> },
+          { path: "/patients", element: <PatientList /> },
+          { path: "/patients/:patientId", element: <PatientDetail /> },
+          { path: "/visits", element: <VisitQueue /> },
+          { path: "/visits/:visitId", element: <VisitDetail /> },
+          { path: "/visits/:visitId/intake", element: <ClinicalIntake /> },
+          { path: "/visits/:visitId/refraction", element: <Refraction /> },
+          { path: "/visits/:visitId/biometric", element: <Biometric /> },
+          { path: "/visits/:visitId/binocular-vision", element: <BinocularVision /> },
+          { path: "/visits/:visitId/risk", element: <RiskAssessment /> },
+          { path: "/visits/:visitId/diagnosis", element: <Diagnosis /> },
+          { path: "/visits/:visitId/treatment", element: <TreatmentPlan /> },
+          { path: "/visits/:visitId/reports", element: <MedicalReport /> },
+          { path: "/parent-portal", element: <ParentChildren /> },
+          { path: "/appointments", element: <AppointmentList /> },
+          { path: "/notifications", element: <NotificationCenter /> },
+          { path: "/admin/users", element: <UserManagementPage /> },
+          { path: "/admin/roles", element: <RoleManagementPage /> },
+          { path: "/admin/clinics", element: <ClinicManagementPage /> },
+        ],
+      },
+    ],
+  },
 
-import ClinicalIntake from "../pages/clinical-intake/ClinicalIntake";
-import Refraction from "../pages/measurements/Refraction";
+  { path: "*", element: <Navigate to="/dashboard" replace /> },
+]);
 
 export default function AppRouter() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-
-        <Route element={<ProtectedRoute />}>
-          <Route element={<MainLayout />}>
-            <Route path="/admin/dashboard" element={<AdminDashboard />} />
-            <Route path="/doctor/dashboard" element={<DoctorDashboard />} />
-            <Route path="/nurse/dashboard" element={<NurseDashboard />} />
-            <Route path="/optometrist/dashboard" element={<OptometristDashboard />} />
-            <Route path="/parent/dashboard" element={<ParentDashboard />} />
-
-            <Route path="/patients" element={<PatientList />} />
-            <Route path="/patients/:patientId" element={<PatientDetail />} />
-
-            <Route path="/visits" element={<VisitQueue />} />
-            <Route path="/visits/:visitId" element={<VisitDetail />} />
-            <Route path="/doctor/visits" element={<VisitQueue />} />
-            <Route path="/optometrist/queue" element={<VisitQueue />} />
-
-            <Route path="/visits/:visitId/intake" element={<ClinicalIntake />} />
-            <Route path="/visits/:visitId/refraction" element={<Refraction />} />
-          </Route>
-        </Route>
-
-        <Route path="*" element={<Navigate to="/login" replace />} />
-      </Routes>
-    </BrowserRouter>
-  );
+  return <RouterProvider router={router} />;
 }

@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using MyoVisionID.Api.Data;
 using MyoVisionID.Api.DTOs.ParentPortal;
 using MyoVisionID.Api.Services.Interfaces;
@@ -237,4 +237,5 @@ public class ParentPortalService : IParentPortalService
         return parent;
     }
 }
+
 

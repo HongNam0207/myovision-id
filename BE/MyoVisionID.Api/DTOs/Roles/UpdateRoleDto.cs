@@ -7,3 +7,4 @@ namespace MyoVisionID.Api.DTOs.Roles
         public bool IsActive { get; set; } = true;
     }
 }
+

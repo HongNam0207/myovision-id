@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace MyoVisionID.Api.Common.Validation;
 
@@ -26,3 +26,4 @@ public class ReasonableDateOnlyAttribute : ValidationAttribute
         return false;
     }
 }
+

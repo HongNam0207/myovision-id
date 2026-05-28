@@ -6,3 +6,4 @@ public class AssignParentDto
     public bool IsPrimaryContact { get; set; }
     public bool CanLogin { get; set; } = true;
 }
+

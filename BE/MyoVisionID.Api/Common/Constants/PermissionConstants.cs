@@ -17,3 +17,4 @@ namespace MyoVisionID.Api.Common.Constants
         public const string UserRolesManage = "user_roles.manage";
     }
 }
+

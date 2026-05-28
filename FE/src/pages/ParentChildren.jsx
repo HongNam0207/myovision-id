@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getMyChildrenApi } from "../api/parentPortal.api";
 
 export default function ParentChildren() {

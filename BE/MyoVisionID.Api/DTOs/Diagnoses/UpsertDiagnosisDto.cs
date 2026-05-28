@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using MyoVisionID.Api.Common.Constants;
 
 namespace MyoVisionID.Api.DTOs.Diagnoses;
@@ -24,3 +24,4 @@ public class UpsertDiagnosisDto
     [RegularExpression(ValidationRegex.ProgressionStatus)]
     public string? ProgressionStatus { get; set; }
 }
+

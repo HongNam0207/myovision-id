@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using MyoVisionID.Api.Common.Constants;
 
 namespace MyoVisionID.Api.DTOs.MasterData;
@@ -21,3 +21,4 @@ public class UpsertSystemSettingDto
     [StringLength(500)]
     public string? Description { get; set; }
 }
+

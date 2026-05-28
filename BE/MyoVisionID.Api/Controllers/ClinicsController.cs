@@ -56,3 +56,4 @@ public class ClinicsController : ControllerBase
         return Ok(ApiResponse<string>.Ok("Clinic disabled."));
     }
 }
+

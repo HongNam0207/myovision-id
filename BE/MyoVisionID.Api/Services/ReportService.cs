@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using System.Text;
 using MyoVisionID.Api.Data;
 using MyoVisionID.Api.DTOs.Reports;
@@ -73,7 +73,7 @@ public class ReportService : IReportService
             ReportContent = content,
             IsVisibleToParent = request.IsVisibleToParent,
             GeneratedBy = _currentUser.UserId,
-            GeneratedAt = DateTime.UtcNow
+            GeneratedAt = DateTime.UtcNow.AddHours(7)
         };
 
         _context.MedicalReports.Add(entity);
@@ -235,3 +235,4 @@ public class ReportService : IReportService
         };
     }
 }
+

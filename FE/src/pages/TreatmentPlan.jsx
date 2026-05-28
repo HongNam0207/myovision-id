@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { createTreatmentPlanApi } from "../api/treatment.api";
 

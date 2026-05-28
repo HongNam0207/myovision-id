@@ -51,7 +51,7 @@ public class ClinicService : IClinicService
             Email = request.Email,
             ManagerUserId = request.ManagerUserId,
             IsActive = true,
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow.AddHours(7)
         };
 
         _context.Clinics.Add(clinic);
@@ -110,3 +110,4 @@ public class ClinicService : IClinicService
         };
     }
 }
+

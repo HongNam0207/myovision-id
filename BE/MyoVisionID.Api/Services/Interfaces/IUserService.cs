@@ -15,3 +15,4 @@ namespace MyoVisionID.Api.Services.Interfaces
         Task<UserPermissionResponseDto> GetPermissionsAsync(long userId);
     }
 }
+

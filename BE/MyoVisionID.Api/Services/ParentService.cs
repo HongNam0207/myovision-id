@@ -43,7 +43,7 @@ public class ParentService : IParentService
             Email = request.Email,
             Address = request.Address,
             IdentityNumber = request.IdentityNumber,
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow.AddHours(7)
         };
 
         _context.Parents.Add(parent);
@@ -86,3 +86,4 @@ public class ParentService : IParentService
         };
     }
 }
+

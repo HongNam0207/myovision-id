@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using MyoVisionID.Api.Common.Constants;
 
 namespace MyoVisionID.Api.DTOs.Roles;
@@ -16,3 +16,4 @@ public class CreateRoleDto
     [StringLength(500)]
     public string? Description { get; set; }
 }
+

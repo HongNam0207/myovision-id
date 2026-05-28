@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ClipboardList, Search } from "lucide-react";
 import { visitApi } from "../../api/visits.api";
@@ -33,9 +33,9 @@ export default function VisitQueue() {
   return (
     <div>
       <div style={{ marginBottom: 24 }}>
-        <h1 className="dd-page-title">Hàng chờ lượt khám</h1>
+        <h1 className="dd-page-title">H�ng ch? lu?t kh�m</h1>
         <p className="dd-page-subtitle">
-          Theo dõi trạng thái workflow khám mắt của bệnh nhi
+          Theo d�i tr?ng th�i workflow kh�m m?t c?a b?nh nhi
         </p>
       </div>
 
@@ -49,22 +49,22 @@ export default function VisitQueue() {
         }}
       >
         <Search size={18} color="#6B8793" />
-        <input className="dd-input" placeholder="Tìm theo mã lượt khám hoặc bệnh nhi..." />
+        <input className="dd-input" placeholder="T�m theo m� lu?t kh�m ho?c b?nh nhi..." />
       </div>
 
       <div className="dd-card">
         {loading ? (
-          <div>Đang tải lượt khám...</div>
+          <div>�ang t?i lu?t kh�m...</div>
         ) : (
           <table className="dd-table">
             <thead>
               <tr>
-                <th>Mã visit</th>
-                <th>Bệnh nhi</th>
-                <th>Loại khám</th>
-                <th>Ngày khám</th>
-                <th>Trạng thái</th>
-                <th>Lý do khám</th>
+                <th>M� visit</th>
+                <th>B?nh nhi</th>
+                <th>Lo?i kh�m</th>
+                <th>Ng�y kh�m</th>
+                <th>Tr?ng th�i</th>
+                <th>L� do kh�m</th>
               </tr>
             </thead>
 

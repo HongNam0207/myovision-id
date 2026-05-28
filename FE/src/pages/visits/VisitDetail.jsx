@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { visitApi } from "../../api/visits.api";
 
@@ -24,23 +24,23 @@ export default function VisitDetail() {
   }, [visitId]);
 
   if (loading) {
-    return <div className="dd-card">Đang tải lượt khám...</div>;
+    return <div className="dd-card">�ang t?i lu?t kh�m...</div>;
   }
 
   if (!visit) {
-    return <div className="dd-card">Không tìm thấy lượt khám.</div>;
+    return <div className="dd-card">Kh�ng t�m th?y lu?t kh�m.</div>;
   }
 
   return (
     <div>
       <h1 className="dd-page-title">{visit.visitCode}</h1>
       <p className="dd-page-subtitle">
-        Chi tiết lượt khám và trạng thái workflow
+        Chi ti?t lu?t kh�m v� tr?ng th�i workflow
       </p>
 
       <div className="dd-stat-grid" style={{ marginBottom: 24 }}>
         <div className="dd-stat-card">
-          <div className="dd-stat-label">Trạng thái</div>
+          <div className="dd-stat-label">Tr?ng th�i</div>
           <div style={{ marginTop: 14 }}>
             <span className="dd-badge dd-badge-blue">
               {visit.status}
@@ -49,21 +49,21 @@ export default function VisitDetail() {
         </div>
 
         <div className="dd-stat-card">
-          <div className="dd-stat-label">Loại khám</div>
+          <div className="dd-stat-label">Lo?i kh�m</div>
           <div className="dd-stat-value" style={{ fontSize: 22 }}>
             {visit.visitType || "-"}
           </div>
         </div>
 
         <div className="dd-stat-card">
-          <div className="dd-stat-label">Ngày khám</div>
+          <div className="dd-stat-label">Ng�y kh�m</div>
           <div className="dd-stat-value" style={{ fontSize: 18 }}>
             {visit.visitDate || "-"}
           </div>
         </div>
 
         <div className="dd-stat-card">
-          <div className="dd-stat-label">Bác sĩ phụ trách</div>
+          <div className="dd-stat-label">B�c si ph? tr�ch</div>
           <div className="dd-stat-value" style={{ fontSize: 18 }}>
             {visit.assignedDoctorName || "-"}
           </div>
@@ -72,21 +72,21 @@ export default function VisitDetail() {
 
       <div className="dd-card">
         <h2 style={{ marginTop: 0, color: "var(--dd-primary-dark)" }}>
-          Thông tin lượt khám
+          Th�ng tin lu?t kh�m
         </h2>
 
         <table className="dd-table">
           <tbody>
             <tr>
-              <th>Mã lượt khám</th>
+              <th>M� lu?t kh�m</th>
               <td>{visit.visitCode}</td>
             </tr>
             <tr>
-              <th>Bệnh nhi</th>
+              <th>B?nh nhi</th>
               <td>{visit.patientName || visit.patient?.fullName || "-"}</td>
             </tr>
             <tr>
-              <th>Lý do khám</th>
+              <th>L� do kh�m</th>
               <td>{visit.chiefComplaint || "-"}</td>
             </tr>
             <tr>

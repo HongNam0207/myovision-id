@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { patientApi } from "../../api/patients.api";
 
@@ -24,40 +24,40 @@ export default function PatientDetail() {
   }, [patientId]);
 
   if (loading) {
-    return <div className="dd-card">Đang tải hồ sơ bệnh nhi...</div>;
+    return <div className="dd-card">�ang t?i h? so b?nh nhi...</div>;
   }
 
   if (!patient) {
-    return <div className="dd-card">Không tìm thấy bệnh nhi.</div>;
+    return <div className="dd-card">Kh�ng t�m th?y b?nh nhi.</div>;
   }
 
   return (
     <div>
       <h1 className="dd-page-title">{patient.fullName}</h1>
       <p className="dd-page-subtitle">
-        Hồ sơ chi tiết bệnh nhi - {patient.patientCode}
+        H? so chi ti?t b?nh nhi - {patient.patientCode}
       </p>
 
       <div className="dd-stat-grid" style={{ marginBottom: 24 }}>
         <div className="dd-stat-card">
-          <div className="dd-stat-label">Mã bệnh nhi</div>
+          <div className="dd-stat-label">M� b?nh nhi</div>
           <div className="dd-stat-value">{patient.patientCode}</div>
         </div>
 
         <div className="dd-stat-card">
-          <div className="dd-stat-label">Giới tính</div>
+          <div className="dd-stat-label">Gi?i t�nh</div>
           <div className="dd-stat-value">{patient.gender || "-"}</div>
         </div>
 
         <div className="dd-stat-card">
-          <div className="dd-stat-label">Ngày sinh</div>
+          <div className="dd-stat-label">Ng�y sinh</div>
           <div className="dd-stat-value" style={{ fontSize: 22 }}>
             {patient.dateOfBirth || "-"}
           </div>
         </div>
 
         <div className="dd-stat-card">
-          <div className="dd-stat-label">Trạng thái</div>
+          <div className="dd-stat-label">Tr?ng th�i</div>
           <div style={{ marginTop: 14 }}>
             <span className="dd-badge dd-badge-green">
               {patient.status || "ACTIVE"}
@@ -68,29 +68,29 @@ export default function PatientDetail() {
 
       <div className="dd-card">
         <h2 style={{ marginTop: 0, color: "var(--dd-primary-dark)" }}>
-          Thông tin hành chính
+          Th�ng tin h�nh ch�nh
         </h2>
 
         <table className="dd-table">
           <tbody>
             <tr>
-              <th>Họ tên</th>
+              <th>H? t�n</th>
               <td>{patient.fullName}</td>
             </tr>
             <tr>
-              <th>Mã bệnh viện</th>
+              <th>M� b?nh vi?n</th>
               <td>{patient.hospitalPatientCode || "-"}</td>
             </tr>
             <tr>
-              <th>Địa chỉ</th>
+              <th>�?a ch?</th>
               <td>{patient.address || "-"}</td>
             </tr>
             <tr>
-              <th>Trường học</th>
+              <th>Tru?ng h?c</th>
               <td>{patient.schoolName || "-"}</td>
             </tr>
             <tr>
-              <th>Lớp</th>
+              <th>L?p</th>
               <td>{patient.grade || "-"}</td>
             </tr>
           </tbody>

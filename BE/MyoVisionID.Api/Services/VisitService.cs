@@ -74,13 +74,13 @@ public class VisitService : IVisitService
             VisitCode = request.VisitCode,
             PatientId = request.PatientId,
             ClinicId = clinicId,
-            VisitDate = DateTime.UtcNow,
+            VisitDate = DateTime.UtcNow.AddHours(7),
             VisitType = request.VisitType,
             Status = "CREATED",
             ChiefComplaint = request.ChiefComplaint,
             AssignedDoctorId = request.AssignedDoctorId,
             CreatedBy = _currentUser.UserId,
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow.AddHours(7)
         };
 
         _context.Visits.Add(visit);
@@ -99,7 +99,7 @@ public class VisitService : IVisitService
         visit.VisitType = request.VisitType;
         visit.ChiefComplaint = request.ChiefComplaint;
         visit.AssignedDoctorId = request.AssignedDoctorId;
-        visit.UpdatedAt = DateTime.UtcNow;
+        visit.UpdatedAt = DateTime.UtcNow.AddHours(7);
 
         await _context.SaveChangesAsync();
 
@@ -120,7 +120,7 @@ public class VisitService : IVisitService
             throw new InvalidOperationException($"Cannot change visit status from {oldStatus} to {newStatus}.");
 
         visit.Status = newStatus;
-        visit.UpdatedAt = DateTime.UtcNow;
+        visit.UpdatedAt = DateTime.UtcNow.AddHours(7);
 
         await AddStatusLogAsync(visit.VisitId, oldStatus, newStatus, note);
         await _context.SaveChangesAsync();
@@ -213,7 +213,7 @@ public class VisitService : IVisitService
             NewStatus = newStatus,
             ChangedBy = _currentUser.UserId,
             Note = note,
-            ChangedAt = DateTime.UtcNow
+            ChangedAt = DateTime.UtcNow.AddHours(7)
         });
 
         await Task.CompletedTask;
@@ -240,3 +240,4 @@ public class VisitService : IVisitService
         };
     }
 }
+

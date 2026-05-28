@@ -6,3 +6,4 @@ public class ParentAccessCheckDto
     public long PatientId { get; set; }
     public bool HasAccess { get; set; }
 }
+

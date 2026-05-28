@@ -1,4 +1,4 @@
-﻿namespace MyoVisionID.Api.DTOs.Appointments;
+namespace MyoVisionID.Api.DTOs.Appointments;
 
 public class NotificationDto
 {
@@ -11,3 +11,4 @@ public class NotificationDto
     public bool IsRead { get; set; }
     public DateTime? CreatedAt { get; set; }
 }
+

@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace MyoVisionID.Api.DTOs.TreatmentPlans;
 
@@ -17,3 +17,4 @@ public class TreatmentPlanDateRangeDto : IValidatableObject
         }
     }
 }
+

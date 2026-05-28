@@ -1,15 +1,15 @@
-﻿namespace MyoVisionID.Api.Common.Constants;
+namespace MyoVisionID.Api.Common.Constants;
 
 public static class ValidationRegex
 {
     public const string EyeSide = "^(OD|OS)$";
-    public const string Gender = "^(Nam|Nữ|Khác|Male|Female|Other)$";
+    public const string Gender = "^(Nam|N?|Kh�c|Male|Female|Other)$";
     public const string VisitType = "^(INITIAL|FOLLOW_UP|EMERGENCY|RECHECK)$";
     public const string VisitStatus = "^(CREATED|WAITING_INTAKE|IN_INTAKE|WAITING_MEASUREMENT|IN_MEASUREMENT|WAITING_DOCTOR|IN_DIAGNOSIS|WAITING_APPROVAL|COMPLETED|CANCELLED)$";
     public const string PatientStatus = "^(ACTIVE|INACTIVE|ARCHIVED)$";
     public const string PhoneVN = "^(0|\\+84)[0-9]{9,10}$";
     public const string Code = "^[A-Z0-9\\-_]{2,50}$";
-    public const string Relationship = "^(Bố|Mẹ|Người giám hộ|Khác|Father|Mother|Guardian|Other)$";
+    public const string Relationship = "^(B?|M?|Ngu?i gi�m h?|Kh�c|Father|Mother|Guardian|Other)$";
     public const string MeasurementType = "^(AUTO_REFRACTION|SUBJECTIVE|CYCLOPLEGIC|RETINOSCOPY)$";
     public const string RiskLevel = "^(LOW|MEDIUM|HIGH)$";
     public const string SeverityLevel = "^(MILD|MODERATE|SEVERE)$";
@@ -25,3 +25,4 @@ public static class ValidationRegex
     public const string RoleCode = "^(ADMIN|OPHTHALMOLOGIST|OPTOMETRIST|NURSE|PARENT)$";
     public const string SettingGroup = "^(SYSTEM|NOTIFICATION|RISK|REPORT|PORTAL|BACKUP)$";
 }
+

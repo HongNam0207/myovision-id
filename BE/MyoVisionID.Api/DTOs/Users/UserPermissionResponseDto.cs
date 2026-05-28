@@ -8,3 +8,4 @@ namespace MyoVisionID.Api.DTOs.Users
         public List<string> Permissions { get; set; } = new();
     }
 }
+

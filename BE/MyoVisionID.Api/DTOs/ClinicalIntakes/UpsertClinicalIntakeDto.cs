@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace MyoVisionID.Api.DTOs.ClinicalIntakes;
 
@@ -53,3 +53,4 @@ public class UpsertClinicalIntakeDto
     [StringLength(1000)]
     public string? EyeDiseaseHistory { get; set; }
 }
+

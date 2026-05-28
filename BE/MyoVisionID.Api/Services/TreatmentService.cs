@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using MyoVisionID.Api.Data;
 using MyoVisionID.Api.DTOs.Treatments;
 using MyoVisionID.Api.Entities;
@@ -76,7 +76,7 @@ public class TreatmentService : ITreatmentService
             FollowUpIntervalDays = request.FollowUpIntervalDays,
             DoctorInstruction = request.DoctorInstruction,
             Status = "ACTIVE",
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow.AddHours(7)
         };
 
         _context.TreatmentPlans.Add(entity);
@@ -101,7 +101,7 @@ public class TreatmentService : ITreatmentService
         entity.ComplianceTarget = request.ComplianceTarget;
         entity.FollowUpIntervalDays = request.FollowUpIntervalDays;
         entity.DoctorInstruction = request.DoctorInstruction;
-        entity.UpdatedAt = DateTime.UtcNow;
+        entity.UpdatedAt = DateTime.UtcNow.AddHours(7);
 
         await _context.SaveChangesAsync();
 
@@ -118,7 +118,7 @@ public class TreatmentService : ITreatmentService
             throw new InvalidOperationException("Invalid treatment plan status.");
 
         entity.Status = status;
-        entity.UpdatedAt = DateTime.UtcNow;
+        entity.UpdatedAt = DateTime.UtcNow.AddHours(7);
 
         await _context.SaveChangesAsync();
 
@@ -158,7 +158,7 @@ public class TreatmentService : ITreatmentService
             Frequency = request.Frequency,
             Instruction = request.Instruction,
             Status = "ACTIVE",
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow.AddHours(7)
         };
 
         _context.TreatmentPlanItems.Add(entity);
@@ -240,3 +240,4 @@ public class TreatmentService : ITreatmentService
         };
     }
 }
+

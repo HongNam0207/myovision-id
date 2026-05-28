@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using MyoVisionID.Api.Common.Constants;
 
 namespace MyoVisionID.Api.DTOs.TreatmentPlans;
@@ -29,3 +29,4 @@ public class UpdateTreatmentPlanDto
     [StringLength(4000)]
     public string? DoctorInstruction { get; set; }
 }
+

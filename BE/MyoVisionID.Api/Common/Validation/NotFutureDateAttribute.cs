@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace MyoVisionID.Api.Common.Validation;
 
@@ -17,3 +17,4 @@ public class NotFutureDateAttribute : ValidationAttribute
         return false;
     }
 }
+

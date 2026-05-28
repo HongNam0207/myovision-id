@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace MyoVisionID.Api.DTOs.TreatmentPlans;
 
@@ -20,3 +20,4 @@ public class CreateTreatmentPlanItemDto
     [StringLength(4000)]
     public string? Instruction { get; set; }
 }
+

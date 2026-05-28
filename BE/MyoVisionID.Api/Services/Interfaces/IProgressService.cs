@@ -1,4 +1,4 @@
-﻿namespace MyoVisionID.Api.Services.Interfaces;
+namespace MyoVisionID.Api.Services.Interfaces;
 
 using MyoVisionID.Api.DTOs.Progress;
 
@@ -12,3 +12,4 @@ public interface IProgressService
     Task<object> GetProgressChartAsync(long patientId);
     Task<object> CompareVisitsAsync(long patientId, long fromVisitId, long toVisitId);
 }
+

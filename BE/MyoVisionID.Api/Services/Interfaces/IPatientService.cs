@@ -13,3 +13,4 @@ public interface IPatientService
     Task<PatientSummaryDto> GetSummaryAsync(long patientId);
     Task<List<PatientTimelineItemDto>> GetTimelineAsync(long patientId);
 }
+

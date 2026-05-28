@@ -11,3 +11,4 @@ public class VisitSummaryDto
     public string? AssignedDoctorName { get; set; }
     public int StatusLogCount { get; set; }
 }
+

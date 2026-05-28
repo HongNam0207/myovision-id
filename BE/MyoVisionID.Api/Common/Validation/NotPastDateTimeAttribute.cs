@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace MyoVisionID.Api.Common.Validation;
 
@@ -9,8 +9,9 @@ public class NotPastDateTimeAttribute : ValidationAttribute
         if (value is null) return true;
 
         if (value is DateTime dateTime)
-            return dateTime >= DateTime.Now.AddMinutes(-5);
+            return dateTime >= DateTime.UtcNow.AddHours(7).AddMinutes(-5);
 
         return false;
     }
 }
+

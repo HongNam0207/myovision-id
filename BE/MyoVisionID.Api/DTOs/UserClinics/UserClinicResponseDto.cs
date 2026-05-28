@@ -11,3 +11,4 @@ public class UserClinicResponseDto
     public string ClinicName { get; set; } = string.Empty;
     public DateTime? AssignedAt { get; set; }
 }
+

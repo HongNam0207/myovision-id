@@ -62,7 +62,7 @@ namespace MyoVisionID.Api.Services
                 RoleName = request.RoleName,
                 Description = request.Description,
                 IsActive = true,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow.AddHours(7)
             };
 
             _context.Roles.Add(role);
@@ -154,3 +154,4 @@ namespace MyoVisionID.Api.Services
         }
     }
 }
+

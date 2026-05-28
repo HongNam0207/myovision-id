@@ -11,3 +11,4 @@ public class ParentResponseDto
     public string? Address { get; set; }
     public string? IdentityNumber { get; set; }
 }
+

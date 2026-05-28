@@ -1,4 +1,4 @@
-﻿using MyoVisionID.Api.DTOs.Measurements;
+using MyoVisionID.Api.DTOs.Measurements;
 
 namespace MyoVisionID.Api.Services.Interfaces;
 
@@ -16,3 +16,4 @@ public interface IEyeMeasurementService
     Task<object> GetMeasurementHistoryAsync(long patientId);
     Task<object> CompleteMeasurementAsync(long visitId);
 }
+

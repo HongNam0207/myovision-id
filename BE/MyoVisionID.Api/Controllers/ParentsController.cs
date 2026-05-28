@@ -42,3 +42,4 @@ public class ParentsController : ControllerBase
         return Ok(ApiResponse<object>.Ok(await _service.UpdateAsync(parentId, request)));
     }
 }
+

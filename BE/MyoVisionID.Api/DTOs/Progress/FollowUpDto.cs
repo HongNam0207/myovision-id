@@ -1,4 +1,4 @@
-﻿namespace MyoVisionID.Api.DTOs.Progress;
+namespace MyoVisionID.Api.DTOs.Progress;
 
 public class FollowUpDto
 {
@@ -15,3 +15,4 @@ public class FollowUpDto
     public long? CreatedBy { get; set; }
     public DateTime? CreatedAt { get; set; }
 }
+

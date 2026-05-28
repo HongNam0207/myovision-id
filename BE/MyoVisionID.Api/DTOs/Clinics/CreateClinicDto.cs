@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using MyoVisionID.Api.Common.Constants;
 
 namespace MyoVisionID.Api.DTOs.Clinics;
@@ -27,3 +27,4 @@ public class CreateClinicDto
     [Range(1, long.MaxValue)]
     public long? ManagerUserId { get; set; }
 }
+

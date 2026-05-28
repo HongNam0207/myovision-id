@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Users, Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { patientApi } from "../../api/patients.api";
@@ -38,15 +38,15 @@ export default function PatientList() {
         }}
       >
         <div>
-          <h1 className="dd-page-title">Danh sách bệnh nhi</h1>
+          <h1 className="dd-page-title">Danh s�ch b?nh nhi</h1>
 
           <p className="dd-page-subtitle">
-            Quản lý hồ sơ bệnh nhi MYOVISION ID
+            Qu?n l� h? so b?nh nhi MYOVISION ID
           </p>
         </div>
 
         <button className="dd-btn dd-btn-primary">
-          + Thêm bệnh nhi
+          + Th�m b?nh nhi
         </button>
       </div>
 
@@ -63,23 +63,23 @@ export default function PatientList() {
 
         <input
           className="dd-input"
-          placeholder="Tìm theo tên hoặc mã bệnh nhân..."
+          placeholder="T�m theo t�n ho?c m� b?nh nh�n..."
         />
       </div>
 
       <div className="dd-card">
         {loading ? (
-          <div>Đang tải dữ liệu...</div>
+          <div>�ang t?i d? li?u...</div>
         ) : (
           <table className="dd-table">
             <thead>
               <tr>
-                <th>Mã BN</th>
-                <th>Họ tên</th>
-                <th>Ngày sinh</th>
-                <th>Giới tính</th>
-                <th>Trường học</th>
-                <th>Trạng thái</th>
+                <th>M� BN</th>
+                <th>H? t�n</th>
+                <th>Ng�y sinh</th>
+                <th>Gi?i t�nh</th>
+                <th>Tru?ng h?c</th>
+                <th>Tr?ng th�i</th>
               </tr>
             </thead>
 

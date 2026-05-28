@@ -6,3 +6,4 @@ namespace MyoVisionID.Api.DTOs.Auth
         public string NewPassword { get; set; } = string.Empty;
     }
 }
+

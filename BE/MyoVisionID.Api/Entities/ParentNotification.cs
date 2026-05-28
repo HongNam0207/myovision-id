@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace MyoVisionID.Api.Entities;
@@ -25,3 +25,4 @@ public partial class ParentNotification
 
     public virtual Patient? Patient { get; set; }
 }
+

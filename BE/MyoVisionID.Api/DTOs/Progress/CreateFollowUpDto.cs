@@ -1,4 +1,4 @@
-﻿namespace MyoVisionID.Api.DTOs.Progress;
+namespace MyoVisionID.Api.DTOs.Progress;
 
 public class CreateFollowUpDto
 {
@@ -11,3 +11,4 @@ public class CreateFollowUpDto
     public string? DoctorNote { get; set; }
     public DateOnly? NextFollowUpDate { get; set; }
 }
+

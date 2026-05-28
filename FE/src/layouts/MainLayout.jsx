@@ -1,4 +1,4 @@
-﻿import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
+import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
   Users,
@@ -15,32 +15,32 @@ import BrandLogo from "../components/common/BrandLogo";
 const menuByRole = {
   ADMIN: [
     { label: "Dashboard", path: "/admin/dashboard", icon: LayoutDashboard },
-    { label: "Người dùng", path: "/admin/users", icon: Users },
-    { label: "Role & quyền", path: "/admin/roles", icon: Settings },
-    { label: "Phòng khám", path: "/admin/clinics", icon: ClipboardList },
+    { label: "Ngu?i d�ng", path: "/admin/users", icon: Users },
+    { label: "Role & quy?n", path: "/admin/roles", icon: Settings },
+    { label: "Ph�ng kh�m", path: "/admin/clinics", icon: ClipboardList },
   ],
   OPHTHALMOLOGIST: [
     { label: "Dashboard", path: "/doctor/dashboard", icon: LayoutDashboard },
-    { label: "Hàng chờ khám", path: "/doctor/visits", icon: ClipboardList },
-    { label: "Bệnh nhi", path: "/patients", icon: UserRound },
-    { label: "Báo cáo", path: "/reports", icon: FileText },
+    { label: "H�ng ch? kh�m", path: "/doctor/visits", icon: ClipboardList },
+    { label: "B?nh nhi", path: "/patients", icon: UserRound },
+    { label: "B�o c�o", path: "/reports", icon: FileText },
   ],
   OPTOMETRIST: [
     { label: "Dashboard", path: "/optometrist/dashboard", icon: LayoutDashboard },
-    { label: "Chờ đo mắt", path: "/optometrist/queue", icon: Activity },
-    { label: "Lịch sử đo", path: "/measurements/history", icon: ClipboardList },
+    { label: "Ch? do m?t", path: "/optometrist/queue", icon: Activity },
+    { label: "L?ch s? do", path: "/measurements/history", icon: ClipboardList },
   ],
   NURSE: [
     { label: "Dashboard", path: "/nurse/dashboard", icon: LayoutDashboard },
-    { label: "Bệnh nhi", path: "/patients", icon: UserRound },
-    { label: "Lượt khám", path: "/visits", icon: ClipboardList },
-    { label: "Lịch hẹn", path: "/appointments", icon: CalendarDays },
+    { label: "B?nh nhi", path: "/patients", icon: UserRound },
+    { label: "Lu?t kh�m", path: "/visits", icon: ClipboardList },
+    { label: "L?ch h?n", path: "/appointments", icon: CalendarDays },
   ],
   PARENT: [
     { label: "Dashboard", path: "/parent/dashboard", icon: LayoutDashboard },
-    { label: "Con của tôi", path: "/parent/children", icon: UserRound },
-    { label: "Lịch hẹn", path: "/parent/appointments", icon: CalendarDays },
-    { label: "Báo cáo", path: "/parent/reports", icon: FileText },
+    { label: "Con c?a t�i", path: "/parent/children", icon: UserRound },
+    { label: "L?ch h?n", path: "/parent/appointments", icon: CalendarDays },
+    { label: "B�o c�o", path: "/parent/reports", icon: FileText },
   ],
 };
 
@@ -69,7 +69,7 @@ export default function MainLayout() {
           <BrandLogo />
         </Link>
 
-        <div className="dd-sidebar-section-title">Điều hướng</div>
+        <div className="dd-sidebar-section-title">�i?u hu?ng</div>
 
         <nav className="dd-sidebar-nav">
           {menus.map((item) => {
@@ -106,7 +106,7 @@ export default function MainLayout() {
 
           <button onClick={logout} className="dd-logout-btn">
             <LogOut size={18} />
-            Đăng xuất
+            �ang xu?t
           </button>
         </div>
       </aside>
@@ -114,9 +114,9 @@ export default function MainLayout() {
       <main className="dd-main">
         <header className="dd-topbar">
           <div>
-            <div className="dd-topbar-title">Khoa Mắt - Bệnh viện Đông Đô</div>
+            <div className="dd-topbar-title">Khoa M?t - B?nh vi?n ��ng ��</div>
             <div className="dd-topbar-subtitle">
-              Hệ thống quản lý cận thị MYOVISION ID
+              H? th?ng qu?n l� c?n th? MYOVISION ID
             </div>
           </div>
 

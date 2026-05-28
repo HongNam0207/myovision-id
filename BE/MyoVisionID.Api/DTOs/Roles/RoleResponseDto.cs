@@ -15,3 +15,4 @@ namespace MyoVisionID.Api.DTOs.Roles
         public DateTime? CreatedAt { get; set; }
     }
 }
+

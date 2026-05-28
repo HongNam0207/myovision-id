@@ -1,4 +1,4 @@
-﻿namespace MyoVisionID.Api.DTOs.Auth
+namespace MyoVisionID.Api.DTOs.Auth
 {
     public class RefreshTokenResponseDto
     {
@@ -6,3 +6,4 @@
         public string RefreshToken { get; set; } = string.Empty;
     }
 }
+

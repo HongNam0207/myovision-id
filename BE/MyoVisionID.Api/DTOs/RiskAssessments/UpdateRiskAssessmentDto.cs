@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using MyoVisionID.Api.Common.Constants;
 
 namespace MyoVisionID.Api.DTOs.RiskAssessments;
@@ -18,3 +18,4 @@ public class UpdateRiskAssessmentDto
     [StringLength(2000)]
     public string? Recommendation { get; set; }
 }
+

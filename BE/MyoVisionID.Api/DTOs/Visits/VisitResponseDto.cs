@@ -17,3 +17,4 @@ public class VisitResponseDto
     public long? CreatedBy { get; set; }
     public DateTime? CreatedAt { get; set; }
 }
+

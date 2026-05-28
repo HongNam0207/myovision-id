@@ -9,3 +9,4 @@ public interface IUserClinicService
     Task RemoveAsync(long userId, long clinicId);
     Task<bool> UserHasClinicAccessAsync(long userId, long clinicId);
 }
+

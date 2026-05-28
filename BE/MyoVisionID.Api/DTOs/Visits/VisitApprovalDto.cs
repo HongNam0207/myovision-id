@@ -10,3 +10,4 @@ public class VisitApprovalDto
     public string? ApprovalNote { get; set; }
     public DateTime? ApprovedAt { get; set; }
 }
+

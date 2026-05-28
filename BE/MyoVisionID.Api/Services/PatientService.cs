@@ -58,7 +58,7 @@ public class PatientService : IPatientService
             ClinicId = request.ClinicId,
             Status = "ACTIVE",
             CreatedBy = _currentUser.UserId,
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow.AddHours(7)
         };
 
         _context.Patients.Add(patient);
@@ -78,7 +78,7 @@ public class PatientService : IPatientService
         patient.SchoolName = request.SchoolName;
         patient.Grade = request.Grade;
         patient.Status = request.Status;
-        patient.UpdatedAt = DateTime.UtcNow;
+        patient.UpdatedAt = DateTime.UtcNow.AddHours(7);
 
         await _context.SaveChangesAsync();
 
@@ -90,7 +90,7 @@ public class PatientService : IPatientService
         var patient = await GetPatientWithAccessCheck(patientId);
 
         patient.Status = "INACTIVE";
-        patient.UpdatedAt = DateTime.UtcNow;
+        patient.UpdatedAt = DateTime.UtcNow.AddHours(7);
 
         await _context.SaveChangesAsync();
     }
@@ -180,3 +180,4 @@ public class PatientService : IPatientService
         };
     }
 }
+

@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using MyoVisionID.Api.Common.Constants;
 using MyoVisionID.Api.Common.Validation;
 
@@ -32,3 +32,4 @@ public class UpdateUserDto
 
     public List<long> RoleIds { get; set; } = new();
 }
+

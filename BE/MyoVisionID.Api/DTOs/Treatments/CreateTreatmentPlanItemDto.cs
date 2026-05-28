@@ -1,4 +1,4 @@
-﻿namespace MyoVisionID.Api.DTOs.Treatments;
+namespace MyoVisionID.Api.DTOs.Treatments;
 
 public class CreateTreatmentPlanItemDto
 {
@@ -8,3 +8,4 @@ public class CreateTreatmentPlanItemDto
     public string? Frequency { get; set; }
     public string? Instruction { get; set; }
 }
+

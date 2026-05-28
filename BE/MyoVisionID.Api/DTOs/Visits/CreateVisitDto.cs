@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using MyoVisionID.Api.Common.Constants;
 
 namespace MyoVisionID.Api.DTOs.Visits;
@@ -26,3 +26,4 @@ public class CreateVisitDto
     [Range(1, long.MaxValue)]
     public long? AssignedDoctorId { get; set; }
 }
+

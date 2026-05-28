@@ -1,4 +1,4 @@
-﻿namespace MyoVisionID.Api.DTOs.Measurements;
+namespace MyoVisionID.Api.DTOs.Measurements;
 
 public class EyeRefractionDto
 {
@@ -15,3 +15,4 @@ public class EyeRefractionDto
     public decimal? Ser { get; set; }
     public string? Note { get; set; }
 }
+

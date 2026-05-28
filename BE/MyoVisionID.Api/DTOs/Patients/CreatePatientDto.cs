@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using MyoVisionID.Api.Common.Constants;
 using MyoVisionID.Api.Common.Validation;
 
@@ -37,4 +37,5 @@ public class CreatePatientDto
     [Range(1, long.MaxValue)]
     public long ClinicId { get; set; }
 }
+
 

@@ -34,3 +34,4 @@ public partial class Clinic
     public virtual ICollection<UserClinic> UserClinics { get; set; } = new List<UserClinic>();
 }
 
+

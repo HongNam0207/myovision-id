@@ -38,7 +38,7 @@ public class VisitApprovalService : IVisitApprovalService
             ApprovedBy = _currentUser.UserId,
             ApprovalStatus = "APPROVED",
             ApprovalNote = note,
-            ApprovedAt = DateTime.UtcNow
+            ApprovedAt = DateTime.UtcNow.AddHours(7)
         };
 
         _context.VisitApprovals.Add(approval);
@@ -65,7 +65,7 @@ public class VisitApprovalService : IVisitApprovalService
             ApprovedBy = _currentUser.UserId,
             ApprovalStatus = "REJECTED",
             ApprovalNote = note,
-            ApprovedAt = DateTime.UtcNow
+            ApprovedAt = DateTime.UtcNow.AddHours(7)
         };
 
         _context.VisitApprovals.Add(approval);
@@ -109,3 +109,4 @@ public class VisitApprovalService : IVisitApprovalService
         };
     }
 }
+

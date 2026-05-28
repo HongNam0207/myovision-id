@@ -1,4 +1,4 @@
-﻿namespace MyoVisionID.Api.DTOs.Reports;
+namespace MyoVisionID.Api.DTOs.Reports;
 
 public class MedicalReportDto
 {
@@ -13,3 +13,4 @@ public class MedicalReportDto
     public long? GeneratedBy { get; set; }
     public DateTime? GeneratedAt { get; set; }
 }
+

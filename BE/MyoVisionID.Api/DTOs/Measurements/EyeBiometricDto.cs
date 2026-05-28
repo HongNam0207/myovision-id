@@ -1,4 +1,4 @@
-﻿namespace MyoVisionID.Api.DTOs.Measurements;
+namespace MyoVisionID.Api.DTOs.Measurements;
 
 public class EyeBiometricDto
 {
@@ -19,3 +19,4 @@ public class EyeBiometricDto
     public string? DeviceName { get; set; }
     public string? Note { get; set; }
 }
+

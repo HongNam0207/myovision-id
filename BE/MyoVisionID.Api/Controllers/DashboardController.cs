@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyoVisionID.Api.Common.Models;
 using MyoVisionID.Api.Services.Interfaces;
@@ -52,3 +52,4 @@ public class DashboardController : ControllerBase
         return Ok(ApiResponse<object>.Ok(await _service.GetParentChildrenSummaryAsync()));
     }
 }
+

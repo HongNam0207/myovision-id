@@ -40,3 +40,4 @@ public class ClinicScopeService : IClinicScopeService
             .ToListAsync();
     }
 }
+

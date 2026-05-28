@@ -36,7 +36,7 @@ public class PatientParentService : IPatientParentService
             ParentId = parentId,
             IsPrimaryContact = isPrimaryContact,
             CanLogin = canLogin,
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow.AddHours(7)
         });
 
         await _context.SaveChangesAsync();
@@ -54,3 +54,4 @@ public class PatientParentService : IPatientParentService
         await _context.SaveChangesAsync();
     }
 }
+

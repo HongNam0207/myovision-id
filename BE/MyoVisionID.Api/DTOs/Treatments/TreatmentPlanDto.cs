@@ -1,4 +1,4 @@
-﻿namespace MyoVisionID.Api.DTOs.Treatments;
+namespace MyoVisionID.Api.DTOs.Treatments;
 
 public class TreatmentPlanDto
 {
@@ -17,3 +17,4 @@ public class TreatmentPlanDto
     public DateTime? CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
 }
+

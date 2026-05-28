@@ -14,3 +14,4 @@ public class PatientSummaryDto
     public string? LatestVisitStatus { get; set; }
     public int ParentCount { get; set; }
 }
+

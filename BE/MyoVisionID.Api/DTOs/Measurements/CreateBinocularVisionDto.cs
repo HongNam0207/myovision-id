@@ -1,4 +1,4 @@
-﻿namespace MyoVisionID.Api.DTOs.Measurements;
+namespace MyoVisionID.Api.DTOs.Measurements;
 
 public class CreateBinocularVisionDto
 {
@@ -14,3 +14,4 @@ public class CreateBinocularVisionDto
     public decimal? NpcCm { get; set; }
     public string? Note { get; set; }
 }
+

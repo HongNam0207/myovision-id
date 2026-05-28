@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using MyoVisionID.Api.Data;
 using MyoVisionID.Api.DTOs.Progress;
 using MyoVisionID.Api.Entities;
@@ -55,7 +55,7 @@ public class ProgressService : IProgressService
             DoctorNote = request.DoctorNote,
             NextFollowUpDate = request.NextFollowUpDate,
             CreatedBy = _currentUser.UserId,
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow.AddHours(7)
         };
 
         _context.FollowUpRecords.Add(entity);
@@ -124,7 +124,7 @@ public class ProgressService : IProgressService
             SerChangeOd = previous == null ? null : odRef?.Ser - previous.SerOd,
             SerChangeOs = previous == null ? null : osRef?.Ser - previous.SerOs,
             ProgressionNote = BuildProgressionNote(odRef?.Ser, osRef?.Ser, odBio?.AxialLengthMm, osBio?.AxialLengthMm),
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow.AddHours(7)
         };
 
         _context.ProgressSnapshots.Add(snapshot);
@@ -281,3 +281,4 @@ public class ProgressService : IProgressService
         };
     }
 }
+

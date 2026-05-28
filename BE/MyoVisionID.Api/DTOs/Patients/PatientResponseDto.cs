@@ -16,3 +16,4 @@ public class PatientResponseDto
     public string Status { get; set; } = "ACTIVE";
     public DateTime? CreatedAt { get; set; }
 }
+

@@ -1,4 +1,4 @@
-﻿export default function BrandLogo() {
+export default function BrandLogo() {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
       <div
@@ -22,7 +22,7 @@
           MYOVISION ID
         </div>
         <div style={{ fontSize: 12, color: "#6B8793" }}>
-          Khoa Mắt - Bệnh viện Đông Đô
+          Khoa M?t - B?nh vi?n ��ng ��
         </div>
       </div>
     </div>

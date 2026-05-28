@@ -1,4 +1,4 @@
-﻿namespace MyoVisionID.Api.DTOs.DoctorCore;
+namespace MyoVisionID.Api.DTOs.DoctorCore;
 
 public class RiskAssessmentDto
 {
@@ -14,3 +14,4 @@ public class RiskAssessmentDto
     public long? AssessedBy { get; set; }
     public DateTime? AssessedAt { get; set; }
 }
+

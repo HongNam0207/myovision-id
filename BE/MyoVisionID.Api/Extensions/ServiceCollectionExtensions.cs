@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -7,7 +7,7 @@ using MyoVisionID.Api.Common.Constants;
 using MyoVisionID.Api.Services;
 using MyoVisionID.Api.Services.Interfaces;
 using System.Text;
-
+using MyoVisionID.Api.Services.Time;
 namespace MyoVisionID.Api.Extensions
 {
     public static class ServiceCollectionExtensions
@@ -37,28 +37,42 @@ namespace MyoVisionID.Api.Extensions
             services.AddScoped<IProgressService, ProgressService>();
             services.AddScoped<IAppointmentService, AppointmentService>();
             services.AddScoped<IAuthorizationHandler, PermissionHandler>();
-
+            services.AddSingleton<IDateTimeService, DateTimeService>();
             return services;
         }
 
         public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
-            var key = configuration["Jwt:Key"] ?? "MyoVisionID_Development_Key_Change_This_At_Least_32_Characters";
-            var issuer = configuration["Jwt:Issuer"] ?? "MyoVisionID";
-            var audience = configuration["Jwt:Audience"] ?? "MyoVisionIDClient";
+            var key = configuration["Jwt:Key"]
+                ?? "MYOVISION_ID_SUPER_SECRET_KEY_2026_DEVELOPMENT_KEY_32_CHARS";
+
+            var issuer = configuration["Jwt:Issuer"]
+                ?? "MyoVisionID";
+
+            var audience = configuration["Jwt:Audience"]
+                ?? "MyoVisionIDUsers";
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
+                    options.RequireHttpsMetadata = false;
+                    options.SaveToken = true;
+
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuer = true,
                         ValidateAudience = true,
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
+
                         ValidIssuer = issuer,
                         ValidAudience = audience,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
+
+                        IssuerSigningKey = new SymmetricSecurityKey(
+                            Encoding.UTF8.GetBytes(key)
+                        ),
+
+                        ClockSkew = TimeSpan.Zero
                     };
                 });
 
@@ -66,18 +80,18 @@ namespace MyoVisionID.Api.Extensions
             {
                 var permissions = new[]
                 {
-                    PermissionConstants.UsersView,
-                    PermissionConstants.UsersCreate,
-                    PermissionConstants.UsersUpdate,
-                    PermissionConstants.UsersDelete,
-                    PermissionConstants.RolesView,
-                    PermissionConstants.RolesCreate,
-                    PermissionConstants.RolesUpdate,
-                    PermissionConstants.RolesDelete,
-                    PermissionConstants.PermissionsView,
-                    PermissionConstants.RolePermissionsManage,
-                    PermissionConstants.UserRolesManage
-                };
+            PermissionConstants.UsersView,
+            PermissionConstants.UsersCreate,
+            PermissionConstants.UsersUpdate,
+            PermissionConstants.UsersDelete,
+            PermissionConstants.RolesView,
+            PermissionConstants.RolesCreate,
+            PermissionConstants.RolesUpdate,
+            PermissionConstants.RolesDelete,
+            PermissionConstants.PermissionsView,
+            PermissionConstants.RolePermissionsManage,
+            PermissionConstants.UserRolesManage
+        };
 
                 foreach (var permission in permissions)
                 {
@@ -131,6 +145,7 @@ namespace MyoVisionID.Api.Extensions
         }
     }
 }
+
 
 
 

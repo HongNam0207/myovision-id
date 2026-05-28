@@ -16,3 +16,4 @@ namespace MyoVisionID.Api.Services.Interfaces
         Task RemovePermissionAsync(long roleId, long permissionId);
     }
 }
+

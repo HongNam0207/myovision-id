@@ -4,3 +4,4 @@ public class CreateVisitApprovalDto
 {
     public string? Note { get; set; }
 }
+

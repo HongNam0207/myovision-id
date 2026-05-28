@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using MyoVisionID.Api.Common.Constants;
 
 namespace MyoVisionID.Api.DTOs.Notifications;
@@ -23,3 +23,4 @@ public class CreateParentNotificationDto
     [RegularExpression(ValidationRegex.NotificationType)]
     public string NotificationType { get; set; } = "SYSTEM";
 }
+

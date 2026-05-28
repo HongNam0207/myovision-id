@@ -82,3 +82,4 @@ public partial class User
     public virtual ICollection<VisitStatusLog> VisitStatusLogs { get; set; } = new List<VisitStatusLog>();
 }
 
+

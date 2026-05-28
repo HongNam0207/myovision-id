@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using MyoVisionID.Api.Data;
@@ -40,7 +40,7 @@ namespace MyoVisionID.Api.Services
             if (user.Status != "ACTIVE")
                 throw new UnauthorizedAccessException("User account is not active");
 
-            user.LastLoginAt = DateTime.UtcNow;
+            user.LastLoginAt = DateTime.UtcNow.AddHours(7);
 
             var accessToken = GenerateAccessToken(user);
             var refreshToken = await CreateRefreshTokenAsync(user.UserId);
@@ -73,14 +73,14 @@ namespace MyoVisionID.Api.Services
                                 .ThenInclude(rp => rp.Permission)
                 .FirstOrDefaultAsync(x => x.Token == request.RefreshToken);
 
-            if (refreshToken == null || refreshToken.IsRevoked || refreshToken.ExpiredAt <= DateTime.UtcNow)
+            if (refreshToken == null || refreshToken.IsRevoked || refreshToken.ExpiredAt <= DateTime.UtcNow.AddHours(7))
                 throw new UnauthorizedAccessException("Invalid refresh token");
 
             if (refreshToken.User.Status != "ACTIVE")
                 throw new UnauthorizedAccessException("User account is not active");
 
             refreshToken.IsRevoked = true;
-            refreshToken.RevokedAt = DateTime.UtcNow;
+            refreshToken.RevokedAt = DateTime.UtcNow.AddHours(7);
 
             var newRefreshToken = await CreateRefreshTokenAsync(refreshToken.UserId);
             var newAccessToken = GenerateAccessToken(refreshToken.User);
@@ -131,7 +131,7 @@ namespace MyoVisionID.Api.Services
                 throw new UnauthorizedAccessException("Old password is incorrect");
 
             user.PasswordHash = request.NewPassword;
-            user.UpdatedAt = DateTime.UtcNow;
+            user.UpdatedAt = DateTime.UtcNow.AddHours(7);
 
             await _context.SaveChangesAsync();
         }
@@ -150,7 +150,7 @@ namespace MyoVisionID.Api.Services
                 throw new KeyNotFoundException("User not found");
 
             user.PasswordHash = request.NewPassword;
-            user.UpdatedAt = DateTime.UtcNow;
+            user.UpdatedAt = DateTime.UtcNow.AddHours(7);
 
             await _context.SaveChangesAsync();
         }
@@ -163,7 +163,7 @@ namespace MyoVisionID.Api.Services
                 return;
 
             token.IsRevoked = true;
-            token.RevokedAt = DateTime.UtcNow;
+            token.RevokedAt = DateTime.UtcNow.AddHours(7);
 
             await _context.SaveChangesAsync();
         }
@@ -174,8 +174,8 @@ namespace MyoVisionID.Api.Services
             {
                 UserId = userId,
                 Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
-                ExpiredAt = DateTime.UtcNow.AddDays(7),
-                CreatedAt = DateTime.UtcNow
+                ExpiredAt = DateTime.UtcNow.AddHours(7).AddDays(7),
+                CreatedAt = DateTime.UtcNow.AddHours(7)
             };
 
             await _context.RefreshTokens.AddAsync(token);
@@ -208,7 +208,7 @@ namespace MyoVisionID.Api.Services
                 issuer: jwt["Issuer"],
                 audience: jwt["Audience"],
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(Convert.ToDouble(jwt["ExpireMinutes"] ?? "60")),
+                expires: DateTime.UtcNow.AddHours(7).AddMinutes(Convert.ToDouble(jwt["ExpireMinutes"] ?? "60")),
                 signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
             );
 
@@ -216,4 +216,5 @@ namespace MyoVisionID.Api.Services
         }
     }
 }
+
 

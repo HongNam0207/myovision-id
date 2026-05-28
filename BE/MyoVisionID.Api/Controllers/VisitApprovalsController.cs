@@ -36,3 +36,4 @@ public class VisitApprovalsController : ControllerBase
         return Ok(ApiResponse<object>.Ok(await _service.GetApprovalsAsync(visitId)));
     }
 }
+

@@ -1,4 +1,4 @@
-﻿namespace MyoVisionID.Api.DTOs.ClinicalIntakes;
+namespace MyoVisionID.Api.DTOs.ClinicalIntakes;
 
 public class ClinicalIntakeDto
 {
@@ -28,3 +28,4 @@ public class ClinicalIntakeDto
     public DateTime? CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
 }
+

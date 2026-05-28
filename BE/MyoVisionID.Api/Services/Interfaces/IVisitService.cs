@@ -13,3 +13,4 @@ public interface IVisitService
     Task<VisitSummaryDto> GetSummaryAsync(long visitId);
     Task<List<VisitTimelineItemDto>> GetTimelineAsync(long visitId);
 }
+

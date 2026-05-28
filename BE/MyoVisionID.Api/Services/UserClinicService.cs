@@ -54,7 +54,7 @@ public class UserClinicService : IUserClinicService
         {
             UserId = userId,
             ClinicId = clinicId,
-            AssignedAt = DateTime.UtcNow
+            AssignedAt = DateTime.UtcNow.AddHours(7)
         });
 
         await _context.SaveChangesAsync();
@@ -84,3 +84,4 @@ public class UserClinicService : IUserClinicService
         return await _context.UserClinics.AnyAsync(x => x.UserId == userId && x.ClinicId == clinicId);
     }
 }
+
