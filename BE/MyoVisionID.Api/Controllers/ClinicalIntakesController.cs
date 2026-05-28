@@ -54,3 +54,4 @@ public class ClinicalIntakesController : ControllerBase
             await _visitService.ChangeStatusAsync(visitId, "WAITING_MEASUREMENT", "Clinical intake completed")));
     }
 }
+

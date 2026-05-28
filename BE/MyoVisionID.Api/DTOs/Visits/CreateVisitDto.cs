@@ -1,17 +1,28 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using MyoVisionID.Api.Common.Constants;
 
 namespace MyoVisionID.Api.DTOs.Visits;
 
 public class CreateVisitDto
 {
     [Required]
+    [StringLength(50, MinimumLength = 2)]
+    [RegularExpression(ValidationRegex.Code)]
     public string VisitCode { get; set; } = string.Empty;
 
-    [Required]
+    [Range(1, long.MaxValue)]
     public long PatientId { get; set; }
 
+    [Range(1, long.MaxValue)]
     public long? ClinicId { get; set; }
+
+    [Required]
+    [RegularExpression(ValidationRegex.VisitType)]
     public string VisitType { get; set; } = "INITIAL";
+
+    [StringLength(1000)]
     public string? ChiefComplaint { get; set; }
+
+    [Range(1, long.MaxValue)]
     public long? AssignedDoctorId { get; set; }
 }

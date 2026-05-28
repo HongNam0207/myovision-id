@@ -1,12 +1,9 @@
-﻿import axiosClient from "./axiosClient";
+import axiosClient from "./axiosClient";
 
-export const patientApi = {
-  getAll: () => axiosClient.get("/patients"),
+export const getPatientsApi = async () => {
+  return axiosClient.get("/patients");
+};
 
-  getById: (id) => axiosClient.get(`/patients/${id}`),
-
-  create: (data) => axiosClient.post("/patients", data),
-
-  update: (id, data) =>
-    axiosClient.put(`/patients/${id}`, data),
+export const getPatientDetailApi = async (id) => {
+  return axiosClient.get(`/patients/${id}`);
 };

@@ -1,10 +1,7 @@
-﻿import axios from "axios";
+import axios from "axios";
 
 const axiosClient = axios.create({
-  baseURL: "https://localhost:7274/api",
-  headers: {
-    "Content-Type": "application/json",
-  },
+  baseURL: import.meta.env.VITE_API_URL,
 });
 
 axiosClient.interceptors.request.use((config) => {
@@ -16,5 +13,18 @@ axiosClient.interceptors.request.use((config) => {
 
   return config;
 });
+
+axiosClient.interceptors.response.use(
+  (response) => response.data,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("user");
+      window.location.href = "/login";
+    }
+
+    return Promise.reject(error);
+  }
+);
 
 export default axiosClient;

@@ -88,3 +88,4 @@ public class DoctorCoreController : ControllerBase
             await _service.CreateDoctorNoteAsync(visitId, request)));
     }
 }
+

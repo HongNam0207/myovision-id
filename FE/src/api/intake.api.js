@@ -1,12 +1,9 @@
-﻿import axiosClient from "./axiosClient";
+import axiosClient from "./axiosClient";
 
-export const intakeApi = {
-  getByVisitId: (visitId) =>
-    axiosClient.get(`/visits/${visitId}/clinical-intake`),
+export const getClinicalIntakeApi = async (visitId) => {
+  return axiosClient.get(`/visits/${visitId}/clinical-intake`);
+};
 
-  create: (visitId, data) =>
-    axiosClient.post(`/visits/${visitId}/clinical-intake`, data),
-
-  update: (intakeId, data) =>
-    axiosClient.put(`/clinical-intakes/${intakeId}`, data),
+export const createClinicalIntakeApi = async (visitId, payload) => {
+  return axiosClient.post(`/visits/${visitId}/clinical-intake`, payload);
 };

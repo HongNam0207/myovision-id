@@ -1,9 +1,18 @@
-namespace MyoVisionID.Api.DTOs.Roles
+﻿using System.ComponentModel.DataAnnotations;
+using MyoVisionID.Api.Common.Constants;
+
+namespace MyoVisionID.Api.DTOs.Roles;
+
+public class CreateRoleDto
 {
-    public class CreateRoleDto
-    {
-        public string RoleCode { get; set; } = string.Empty;
-        public string RoleName { get; set; } = string.Empty;
-        public string? Description { get; set; }
-    }
+    [Required]
+    [RegularExpression(ValidationRegex.RoleCode)]
+    public string RoleCode { get; set; } = string.Empty;
+
+    [Required]
+    [StringLength(100, MinimumLength = 2)]
+    public string RoleName { get; set; } = string.Empty;
+
+    [StringLength(500)]
+    public string? Description { get; set; }
 }

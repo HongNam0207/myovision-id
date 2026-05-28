@@ -1,27 +1,29 @@
 ﻿import axiosClient from "./axiosClient";
 
-export const measurementApi = {
-  getRefractions: (visitId) =>
-    axiosClient.get(`/visits/${visitId}/refractions`),
+export const getRefractionsApi = async (visitId) => {
+  return axiosClient.get(`/visits/${visitId}/refractions`);
+};
 
-  createRefraction: (visitId, data) =>
-    axiosClient.post(`/visits/${visitId}/refractions`, data),
+export const createRefractionApi = async (visitId, payload) => {
+  return axiosClient.post(`/visits/${visitId}/refractions`, payload);
+};
 
-  updateRefraction: (refractionId, data) =>
-    axiosClient.put(`/refractions/${refractionId}`, data),
+export const getBiometricsApi = async (visitId) => {
+  return axiosClient.get(`/visits/${visitId}/biometrics`);
+};
 
-  deleteRefraction: (refractionId) =>
-    axiosClient.delete(`/refractions/${refractionId}`),
+export const createBiometricApi = async (visitId, payload) => {
+  return axiosClient.post(`/visits/${visitId}/biometrics`, payload);
+};
 
-  getBiometrics: (visitId) =>
-    axiosClient.get(`/visits/${visitId}/biometrics`),
+export const getBinocularVisionApi = async (visitId) => {
+  return axiosClient.get(`/visits/${visitId}/binocular-vision`);
+};
 
-  createBiometric: (visitId, data) =>
-    axiosClient.post(`/visits/${visitId}/biometrics`, data),
+export const createBinocularVisionApi = async (visitId, payload) => {
+  return axiosClient.post(`/visits/${visitId}/binocular-vision`, payload);
+};
 
-  updateBiometric: (biometricId, data) =>
-    axiosClient.put(`/biometrics/${biometricId}`, data),
-
-  deleteBiometric: (biometricId) =>
-    axiosClient.delete(`/biometrics/${biometricId}`),
+export const updateBinocularVisionApi = async (binocularId, payload) => {
+  return axiosClient.put(`/binocular-visions/${binocularId}`, payload);
 };

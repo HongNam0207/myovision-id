@@ -1,6 +1,9 @@
-﻿import axiosClient from "./axiosClient";
+import axiosClient from "./axiosClient";
 
-export const authApi = {
-  login: (data) => axiosClient.post("/auth/login", data),
-  me: () => axiosClient.get("/auth/me"),
+export const loginApi = async (payload) => {
+  return axiosClient.post("/auth/login", payload);
+};
+
+export const meApi = async () => {
+  return axiosClient.get("/auth/me");
 };
